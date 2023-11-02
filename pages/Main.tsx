@@ -1,10 +1,26 @@
 import * as React from 'react';
-import { View, Text, SafeAreaView } from "react-native";
+import {useState} from 'react';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Home from './home/Home';
+import Chat from './chat/Chat';
+import Tip from './tip/Tip';
+import Mypage from './mypage/Mypage';
+import Login from './auth/Login';
 
 export default function Main(props: any) {
-  return (
-    <SafeAreaView>
-      <Text>This is the main page</Text>
-    </SafeAreaView>
-  )
+  const Stack = createNativeStackNavigator();
+  const [auth, setAuth] = useState(false);
+
+  if (auth) {
+    return (
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name={'Home'} component={Home} />
+        <Stack.Screen name={'Chat'} component={Chat} />
+        <Stack.Screen name={'Tip'} component={Tip} />
+        <Stack.Screen name={'Mypage'} component={Mypage} />
+      </Stack.Navigator>
+    );
+  } else {
+    return <Login setAuth={setAuth} />;
+  }
 }
