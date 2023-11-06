@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
   Modal,
@@ -17,6 +16,7 @@ export default function Home({navigation}) {
   const [input, setInput] = useState('');
   const [category, setCategory] = useState(4);
   const [tutorial, setTutorial] = useState(true);
+  const [next, setNext] = useState(false);
   const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark'];
   const windowWidth = Dimensions.get('window').width;
   return (
@@ -172,7 +172,10 @@ export default function Home({navigation}) {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => setTutorial(false)}
+              onPress={() => {
+                setTutorial(false);
+                setNext(true);
+              }}
               style={{
                 height: 32,
                 width: '50%',
@@ -196,6 +199,183 @@ export default function Home({navigation}) {
           </View>
         </View>
       </Modal>
+
+      <Modal
+        visible={next}
+        style={{
+          height: Dimensions.get('window').height,
+          width: Dimensions.get('window').width,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        transparent={true}>
+        <View
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            height: '100%',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              height: 283,
+              width: windowWidth * 0.557,
+              backgroundColor: '#fff',
+              borderRadius: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 15,
+                fontWeight: '600',
+                color: '#000',
+              }}>
+              If you are new...
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontWeight: '300',
+                fontSize: 12,
+                color: '#000',
+                marginTop: 18,
+              }}>
+              How to save place of interest?
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                height: 26,
+                alignItems: 'center',
+                marginTop: 20,
+                justifyContent: 'center',
+                marginBottom: 19,
+              }}>
+              <Image
+                source={require('../../public/icons/addPlan.png')}
+                style={{
+                  height: 30,
+                  width: 30,
+                  marginRight: 15,
+                }}
+              />
+              <View>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 12,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {'Add to Place-on-Plan,'}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 12,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {'saving the places you'}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 12,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {'will visit today'}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                height: 26,
+                alignItems: 'center',
+                marginTop: 20,
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={require('../../public/icons/bookMark.png')}
+                style={{
+                  height: 30,
+                  width: 30,
+                  marginRight: 15,
+                }}
+              />
+              <View>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 12,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {'Add to bookmark,'}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 12,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {'saving the places for'}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 12,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {'future visits'}
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setNext(false);
+              }}
+              style={{
+                height: 32,
+                width: '50%',
+                backgroundColor: '#333',
+                marginTop: 26,
+                borderRadius: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 14,
+                  fontWeight: '500',
+                  color: '#fff',
+                }}>
+                Got it
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <View
         style={{
           height: 50,
@@ -238,7 +418,7 @@ export default function Home({navigation}) {
           />
         </View>
         <TouchableOpacity
-          onPress={() => Alert.alert('mypage')}
+          onPress={() => navigation.navigate('Mypage')}
           style={{
             marginLeft: 7,
           }}>

@@ -13,24 +13,24 @@ import Main from './pages/Main';
 import {NavigationContainer} from '@react-navigation/native';
 
 function App(): JSX.Element {
-    const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === 'dark';
 
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-        flex: 1,
-    };
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    flex: 1,
+  };
 
-    return (
-        <NavigationContainer>
-            <SafeAreaView style={backgroundStyle}>
-                <StatusBar
-                    barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                    backgroundColor={backgroundStyle.backgroundColor}
-                />
-                <Main />
-            </SafeAreaView>
-        </NavigationContainer>
-    );
+  return (
+    <NavigationContainer>
+      <SafeAreaView style={{flex: 1}}>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={backgroundStyle.backgroundColor}
+        />
+        <Main />
+      </SafeAreaView>
+    </NavigationContainer>
+  );
 }
 
 export default App;

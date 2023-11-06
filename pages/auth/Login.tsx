@@ -1,19 +1,22 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
   SafeAreaView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import WhiteInput from '../../components/text/WhiteInput';
+import BlackButton from '../../components/button/BlackButton';
+import WhiteButton from '../../components/button/WhiteButton';
+import Register from './Register';
 
 export default function Login(props: any) {
   const setAuth = props.setAuth;
   const windowWidth = Dimensions.get('window').width;
+  const [showLogin, setShowLogin] = useState(true);
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
 
@@ -22,127 +25,118 @@ export default function Login(props: any) {
   }
 
   function register() {
-    Alert.alert('register');
+    setShowLogin(false);
   }
 
-  return (
-    <SafeAreaView
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <View
+  if (showLogin) {
+    return (
+      <SafeAreaView
         style={{
-          height: '20%',
-          width: '100%',
+          alignItems: 'center',
           justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 20,
-            fontWeight: '700',
-          }}>
-          {'열심히 만든 어플'}
-        </Text>
-      </View>
-      <Image
-        source={require('../../public/images/bopuri1.png')}
-        style={{
-          alignSelf: 'center',
-          width: windowWidth * 0.6,
-          height: 200,
-          resizeMode: 'contain',
-        }}
-      />
-      <View
-        style={{
-          height: '25%',
-          width: '100%',
-          alignItems: 'center',
-          marginTop: 50,
+          backgroundColor: '#f5f5f5',
         }}>
         <View
           style={{
-            height: 50,
-            width: windowWidth * 0.889,
-            marginVertical: 10,
-            flexDirection: 'row',
+            height: '100%',
+            width: '100%',
             alignItems: 'center',
-            backgroundColor: '#fff',
-            borderRadius: 25,
-            borderWidth: 1,
-            borderColor: 'rgba(0, 0, 0, 0.29)',
+            justifyContent: 'center',
           }}>
-          <TextInput
-            style={{marginHorizontal: 20, width: windowWidth * 0.889 - 40}}
+          <Image
+            source={require('../../public/images/logo.png')}
+            style={{
+              height: 44,
+              width: 177,
+              resizeMode: 'contain',
+              marginBottom: 82,
+            }}
+          />
+          <WhiteInput
             value={id}
-            onChangeText={setId}
-            placeholder={'Please enter ID'}
-            keyboardType={'default'}
+            onChange={setId}
+            placeHolder={'Email'}
+            secure={false}
+            type={'email-address'}
           />
-        </View>
-        <View
-          style={{
-            height: 50,
-            width: windowWidth * 0.889,
-            marginVertical: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: '#fff',
-            borderRadius: 25,
-            borderWidth: 1,
-            borderColor: 'rgba(0, 0, 0, 0.29)',
-          }}>
-          <TextInput
-            style={{marginHorizontal: 20, width: windowWidth * 0.889 - 40}}
+          <WhiteInput
             value={pw}
-            onChangeText={setPw}
-            placeholder={'Please enter PW'}
-            keyboardType={'default'}
-            secureTextEntry={true}
+            onChange={setPw}
+            placeHolder={'Password'}
+            secure={true}
+            type={'default'}
+          />
+          <View
+            style={{
+              width: windowWidth * 0.562,
+              justifyContent: 'center',
+            }}>
+            <TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 8,
+                  fontWeight: '400',
+                  color: '#a3a3a3',
+                  textAlign: 'right',
+                }}>
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              height: 29,
+            }}
+          />
+          <BlackButton value={'Log in'} onPress={login} />
+          <View
+            style={{
+              marginVertical: 12,
+              width: windowWidth * 0.562,
+              height: 24,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 8,
+                fontWeight: '400',
+                color: '#a3a3a3',
+              }}>
+              {'---------------------- OR ----------------------'}
+            </Text>
+          </View>
+          <View
+            style={{
+              marginBottom: 12,
+              width: windowWidth * 0.562,
+              height: 24,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 10,
+                fontWeight: '400',
+                color: '#a3a3a3',
+              }}>
+              Don't have account?
+            </Text>
+          </View>
+          <WhiteButton
+            value={'Create Account'}
+            onPress={() => setShowLogin(false)}
           />
         </View>
-      </View>
-      <View
-        style={{
-          height: 50,
-          flexDirection: 'row',
-          width: '100%',
-          alignItems: 'center',
-        }}>
-        <TouchableOpacity
-          onPress={() => login()}
-          style={{
-            height: 50,
-            width: '40%',
-            backgroundColor: '#fff',
-            marginHorizontal: '5%',
-            borderRadius: 25,
-            borderWidth: 1,
-            borderColor: 'rgba(0, 0, 0, 0.29)',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => register()}
-          style={{
-            height: 50,
-            width: '40%',
-            backgroundColor: '#fff',
-            marginHorizontal: '5%',
-            borderRadius: 25,
-            borderWidth: 1,
-            borderColor: 'rgba(0, 0, 0, 0.29)',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text>Register</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
+      </SafeAreaView>
+    );
+  } else {
+    return <Register setShowLogin={setShowLogin} />;
+  }
 }
