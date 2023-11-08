@@ -18,8 +18,15 @@ export default function Home({navigation}) {
   const [category, setCategory] = useState(-1);
   const [tutorial, setTutorial] = useState(true);
   const [next, setNext] = useState(false);
+  const [location, setLocation] = useState(false);
+  const [place, setPlace] = useState("Woody Room");
+  const [surveyed, setSurveyed] = useState(false);
+  const [selected, setSelected] = useState(0);
   const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
+
+
+
   return (
     <SafeAreaView>
       <Image
@@ -352,6 +359,7 @@ export default function Home({navigation}) {
             <TouchableOpacity
               onPress={() => {
                 setNext(false);
+                setLocation(true);
               }}
               style={{
                 height: 32,
@@ -374,6 +382,209 @@ export default function Home({navigation}) {
               </Text>
             </TouchableOpacity>
           </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={location}
+        style={{
+          height: Dimensions.get('window').height,
+          width: Dimensions.get('window').width,
+          justifyContent: 'center',
+          alignItems: 'center',}}
+        transparent={true}>
+        <View
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            height: '100%',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+
+          <View
+            style={{
+              height: 230,
+              width: windowWidth * 0.75,
+              backgroundColor: '#fff',
+              borderRadius: 20,
+              justifyContent: 'center',
+              alignItems: 'center',}}>
+              <View
+              style={{
+                flexDirection: 'column',
+                width: '100%',
+                height: 26,
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    fontWeight: '500',
+                    fontSize: 13
+                  }}
+                >Are you current at {place}? </Text>
+                <Text>How congested is it?</Text>
+              </View>
+              <View 
+                style={{
+                  flexDirection:'column',
+                  justifyContent: 'center',
+                  width: windowWidth * 0.59,
+                  marginTop: 8}}>
+                <View
+                style={{
+                  flexDirection:'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 20,
+                }}>
+                  <TouchableOpacity onPress={() => { setSelected(1); setSurveyed(true) }}>
+                  <View
+                    style={[{
+                      height: 12,
+                      width: 12,
+                      borderRadius: 12,
+                      borderWidth: 1,
+                      borderColor: '#000',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                      }]}>
+                      {selected == 1 ? <View style={{height: 6, width:6, borderRadius:6, backgroundColor: '#000'}} /> : null}
+                  </View>
+                  </TouchableOpacity>
+                  <View style={{
+                      borderStyle: 'dotted',
+                      width: windowWidth * 0.2,
+                      borderWidth: 1,
+                      borderRadius: 1,
+                    }}>
+                    </View>
+                  <TouchableOpacity onPress={() => { setSelected(2); setSurveyed(true) }}>
+                  <View
+                    style={[{
+                      height: 12,
+                      width: 12,
+                      borderRadius: 12,
+                      borderWidth: 1,
+                      borderColor: '#000',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                      }]}>
+                      {selected == 2 ? <View style={{height: 6, width:6, borderRadius:6, backgroundColor: '#000'}} /> : null}
+                  </View>
+                  </TouchableOpacity>
+                  <View style={{
+                      borderStyle: 'dotted',
+                      width: windowWidth * 0.2,
+                      borderWidth: 1,
+                      borderRadius: 1,
+                    }}>
+                  </View>
+                  <TouchableOpacity onPress={() => { setSelected(3); setSurveyed(true) }}>
+                  <View
+                    style={[{
+                      height: 12,
+                      width: 12,
+                      borderRadius: 12,
+                      borderWidth: 1,
+                      borderColor: '#000',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                      }]}>
+                    {selected == 3 ? <View style={{height: 6, width:6, borderRadius:6, backgroundColor: '#000'}} /> : null}
+                  </View>
+                  </TouchableOpacity>
+                </View>
+
+              <View style={{
+                flexDirection:'row',
+                justifyContent: 'space-between',
+                marginTop: 5}}>
+              <Text style={{fontFamily: 'Inter', fontSize: 9, textAlign: 'center'}}>not{"\n"}congested</Text>
+              <Text style={{fontFamily: 'Inter', fontSize: 9, textAlign: 'center'}}>slightly{"\n"}congested</Text>
+              <Text style={{fontFamily: 'Inter', fontSize: 9, textAlign: 'center'}}>very{"\n"}congested</Text>
+              </View>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => { setLocation(false); }}
+                  style={{
+                    height: 32,
+                    width: '35%',
+                    marginTop: 26,
+                    marginRight: 15,
+                    borderRadius: 20,
+                    borderColor: '#000',
+                    borderWidth: 1,
+                    backgroundColor: '#FFF',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 14,
+                    fontWeight: '500',
+                    color: '#000',
+                  }}>
+                  Cancel
+                </Text>
+                </TouchableOpacity>
+                {surveyed? 
+                <TouchableOpacity
+                  onPress={() => {
+                    setLocation(false);
+                  }}
+                  style={{
+                    height: 32,
+                    width: '35%',
+                    backgroundColor: '#000',
+                    borderColor: '#000',
+                    borderWidth: 1,
+                    marginTop: 26,
+                    borderRadius: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      includeFontPadding: false,
+                      fontSize: 14,
+                      fontWeight: '500',
+                      color: '#fff',
+                    }}>
+                    Submit
+                  </Text>
+                </TouchableOpacity> :
+                <View style={{
+                  height: 32,
+                  width: '35%',
+                  backgroundColor: '#fff',
+                  borderColor: '#AFACAC',
+                  borderWidth: 1,
+                  marginTop: 26,
+                  borderRadius: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      includeFontPadding: false,
+                      fontSize: 14,
+                      fontWeight: '500',
+                      color:'#AFACAC',
+                    }}>
+                    Submit
+                  </Text>
+                </View>
+                }
+              </View>
+          </View>
+
         </View>
       </Modal>
 
@@ -429,6 +640,7 @@ export default function Home({navigation}) {
           />
         </TouchableOpacity>
       </View>
+
       <View
         style={{
           height: 26,
