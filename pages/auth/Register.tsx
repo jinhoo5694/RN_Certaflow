@@ -12,7 +12,12 @@ export default function Register(props: any) {
   const [pw, setPw] = useState('');
   const [confirm, setConfirm] = useState('');
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+      }}>
       <View
         style={{
           height: '100%',
@@ -23,7 +28,7 @@ export default function Register(props: any) {
         <Image
           source={require('../../public/images/logo.png')}
           style={{
-            height: 44,
+            height: 30,
             width: 177,
             resizeMode: 'contain',
             marginBottom: 82,
@@ -45,7 +50,7 @@ export default function Register(props: any) {
               fontWeight: '600',
               color: '#000',
               textDecorationLine: 'underline',
-              marginLeft: 20,
+              marginLeft: 10,
             }}>
             Email
           </Text>
@@ -66,17 +71,29 @@ export default function Register(props: any) {
               fontWeight: '600',
               color: '#000',
               textDecorationLine: 'underline',
-              marginLeft: 20,
+              marginLeft: 10,
             }}>
             Password
           </Text>
           <WhiteInput
             value={pw}
             onChange={setPw}
-            placeHolder={'10 characters minimum'}
+            placeHolder={'••••••••••'}
             secure={false}
             type={'default'}
           />
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 8,
+              fontWeight: '400',
+              color: '#a3a3a3',
+              textAlign: 'left',
+              marginLeft: 15
+            }}>
+            ✓ 10 characters minimum
+          </Text>
         </View>
         <View style={{width: windowWidth * 0.562, marginBottom: 17}}>
           <Text
@@ -87,7 +104,7 @@ export default function Register(props: any) {
               fontWeight: '600',
               color: '#000',
               textDecorationLine: 'underline',
-              marginLeft: 20,
+              marginLeft: 10,
             }}>
             Confirm Password
           </Text>
@@ -103,7 +120,7 @@ export default function Register(props: any) {
           value={'Create Account'}
           onPress={() => setShowLogin(true)}
         />
-        <View style={{height: 24}} />
+        <View style={{height: 18}} />
         <WhiteButton value={'Login'} onPress={() => setShowLogin(true)} />
       </View>
     </SafeAreaView>

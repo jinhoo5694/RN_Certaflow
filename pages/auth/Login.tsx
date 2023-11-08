@@ -52,20 +52,55 @@ export default function Login(props: any) {
               marginBottom: 82,
             }}
           />
+          <View
+          style={{
+            width: windowWidth * 0.562,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
+        <View style={{width: windowWidth * 0.562, marginBottom: 17}}>
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 13,
+              fontWeight: '600',
+              color: '#000',
+              textDecorationLine: 'underline',
+              marginLeft: 10,
+            }}>
+            Email
+          </Text>
           <WhiteInput
             value={id}
             onChange={setId}
-            placeHolder={'Email'}
+            placeHolder={'certaflow@gmail.com'}
             secure={false}
             type={'email-address'}
           />
-          <WhiteInput
-            value={pw}
-            onChange={setPw}
-            placeHolder={'Password'}
-            secure={true}
-            type={'default'}
-          />
+          </View>
+          <View style={{width: windowWidth * 0.562, marginBottom: 3}}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 13,
+                fontWeight: '600',
+                color: '#000',
+                textDecorationLine: 'underline',
+                marginLeft: 10,
+              }}>
+              Password
+            </Text>
+            <WhiteInput
+              value={pw}
+              onChange={setPw}
+              placeHolder={'••••••••••'}
+              secure={true}
+              type={'default'}
+            />
+          </View>
           <View
             style={{
               width: windowWidth * 0.562,
@@ -87,7 +122,7 @@ export default function Login(props: any) {
           </View>
           <View
             style={{
-              height: 29,
+              height: 23,
             }}
           />
           <BlackButton value={'Log in'} onPress={login} />
@@ -107,12 +142,12 @@ export default function Login(props: any) {
                 fontWeight: '400',
                 color: '#a3a3a3',
               }}>
-              {'---------------------- OR ----------------------'}
+              {'─────────── OR ───────────'}
             </Text>
           </View>
           <View
             style={{
-              marginBottom: 12,
+              marginBottom: 7,
               width: windowWidth * 0.562,
               height: 24,
               alignItems: 'center',

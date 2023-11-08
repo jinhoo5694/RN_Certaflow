@@ -14,9 +14,10 @@ export default function WhiteInput(props: any) {
         height: 40,
         width: Dimensions.get('window').width * 0.562,
         backgroundColor: '#fff',
-        borderRadius: 20,
-        paddingHorizontal: 20,
+        borderRadius: 10,
+        paddingHorizontal: 15,
         marginVertical: 6,
+        fontSize:11
       }}
       placeholder={placeHolder}
       value={value}

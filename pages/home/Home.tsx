@@ -9,15 +9,16 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView
 } from 'react-native';
 
 export default function Home({navigation}) {
   const [modal, setModal] = useState(true);
   const [input, setInput] = useState('');
-  const [category, setCategory] = useState(4);
+  const [category, setCategory] = useState(-1);
   const [tutorial, setTutorial] = useState(true);
   const [next, setNext] = useState(false);
-  const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark'];
+  const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
   return (
     <SafeAreaView>
@@ -437,9 +438,13 @@ export default function Home({navigation}) {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
+        <ScrollView horizontal={true} 
+          contentContainerStyle={{paddingHorizontal: 25}}
+          showsHorizontalScrollIndicator={false}
+          style={{height:26}}>
         <TouchableOpacity
           onPress={() => {
-            category == 0 ? setCategory(4) : setCategory(0);
+            category == 0 ? setCategory(-1) : setCategory(0);
           }}
           style={{
             height: '100%',
@@ -471,7 +476,7 @@ export default function Home({navigation}) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            category == 1 ? setCategory(4) : setCategory(1);
+            category == 1 ? setCategory(-1) : setCategory(1);
           }}
           style={{
             height: '100%',
@@ -503,7 +508,7 @@ export default function Home({navigation}) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            category == 2 ? setCategory(4) : setCategory(2);
+            category == 2 ? setCategory(-1) : setCategory(2);
           }}
           style={{
             height: '100%',
@@ -535,7 +540,7 @@ export default function Home({navigation}) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            category == 3 ? setCategory(4) : setCategory(3);
+            category == 3 ? setCategory(-1) : setCategory(3);
           }}
           style={{
             height: '100%',
@@ -548,6 +553,7 @@ export default function Home({navigation}) {
             alignItems: 'center',
             borderWidth: category == 3 ? 2 : 1,
             flexDirection: 'row',
+            marginRight: 5,
           }}>
           <Image
             source={require('../../public/icons/landmark.png')}
@@ -564,6 +570,39 @@ export default function Home({navigation}) {
             Landmark
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            category == 4 ? setCategory(-1) : setCategory(4);
+          }}
+          style={{
+            height: '100%',
+            paddingHorizontal: 8,
+            paddingVertical: 5,
+            backgroundColor: '#fff',
+            borderRadius: 20,
+            borderColor: category == 4 ? '#000' : 'rgba(0, 0, 0, 0.29)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderWidth: category == 4 ? 2 : 1,
+            flexDirection: 'row',
+            marginRight: 5,
+          }}>
+          <Image
+            source={require('../../public/icons/museum.png')}
+            style={{height: 15, width: 15, marginRight: 4}}
+          />
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 13,
+              fontWeight: '400',
+              color: '#000',
+            }}>
+            Musuem
+          </Text>
+        </TouchableOpacity>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
