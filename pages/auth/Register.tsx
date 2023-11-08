@@ -12,7 +12,12 @@ export default function Register(props: any) {
   const [pw, setPw] = useState('');
   const [confirm, setConfirm] = useState('');
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+      }}>
       <View
         style={{
           height: '100%',
@@ -45,7 +50,7 @@ export default function Register(props: any) {
               fontWeight: '600',
               color: '#000',
               textDecorationLine: 'underline',
-              marginLeft: 20,
+              marginLeft: 10,
             }}>
             Email
           </Text>
@@ -66,7 +71,7 @@ export default function Register(props: any) {
               fontWeight: '600',
               color: '#000',
               textDecorationLine: 'underline',
-              marginLeft: 20,
+              marginLeft: 10,
             }}>
             Password
           </Text>
@@ -87,7 +92,7 @@ export default function Register(props: any) {
               fontWeight: '600',
               color: '#000',
               textDecorationLine: 'underline',
-              marginLeft: 20,
+              marginLeft: 10,
             }}>
             Confirm Password
           </Text>
