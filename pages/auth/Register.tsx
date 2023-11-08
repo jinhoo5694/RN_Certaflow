@@ -28,7 +28,7 @@ export default function Register(props: any) {
         <Image
           source={require('../../public/images/logo.png')}
           style={{
-            height: 44,
+            height: 30,
             width: 177,
             resizeMode: 'contain',
             marginBottom: 82,
@@ -78,10 +78,22 @@ export default function Register(props: any) {
           <WhiteInput
             value={pw}
             onChange={setPw}
-            placeHolder={'10 characters minimum'}
+            placeHolder={'••••••••••'}
             secure={false}
             type={'default'}
           />
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 8,
+              fontWeight: '400',
+              color: '#a3a3a3',
+              textAlign: 'left',
+              marginLeft: 15
+            }}>
+            ✓ 10 characters minimum
+          </Text>
         </View>
         <View style={{width: windowWidth * 0.562, marginBottom: 17}}>
           <Text
@@ -108,7 +120,7 @@ export default function Register(props: any) {
           value={'Create Account'}
           onPress={() => setShowLogin(true)}
         />
-        <View style={{height: 24}} />
+        <View style={{height: 18}} />
         <WhiteButton value={'Login'} onPress={() => setShowLogin(true)} />
       </View>
     </SafeAreaView>

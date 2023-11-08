@@ -142,8 +142,7 @@ export default function Login(props: any) {
                 fontWeight: '400',
                 color: '#a3a3a3',
               }}>
-
-              {'---------------------- OR ----------------------'}
+              {'─────────── OR ───────────'}
             </Text>
           </View>
           <View
