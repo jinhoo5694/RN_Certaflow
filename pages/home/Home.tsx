@@ -1,16 +1,21 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useCallback, useMemo, useRef, useState} from 'react';
 import {
   Dimensions,
   Image,
   Modal,
   SafeAreaView,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  ScrollView
 } from 'react-native';
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
 
 export default function Home({navigation}) {
   const [modal, setModal] = useState(true);
@@ -20,14 +25,34 @@ export default function Home({navigation}) {
   const [next, setNext] = useState(false);
   const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
+
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  // variables
+  const snapPoints = useMemo(() => ['50%'], []); // Here we add '0%' to make it start from the bottom
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const close = useCallback(() => {
+    bottomSheetModalRef.current?.dismiss();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior={'close'}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    [],
+  );
+
   return (
     <SafeAreaView>
-      <Image
-        source={require('../../public/images/img_1.png')}
-        style={{
-          position: 'absolute',
-        }}
-      />
       <Modal
         visible={tutorial}
         style={{
@@ -376,233 +401,258 @@ export default function Home({navigation}) {
           </View>
         </View>
       </Modal>
-
-      <View
-        style={{
-          height: 50,
-          width: '100%',
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: 15,
-          justifyContent: 'center',
-        }}>
+      <View style={{flex: 1}}>
         <View
           style={{
-            height: 40,
-            width: windowWidth * 0.734,
-            backgroundColor: '#fff',
-            borderRadius: 20,
-            borderWidth: 1,
-            borderColor: 'rgba(0, 0, 0, 0.29)',
-            paddingHorizontal: 15,
-            justifyContent: 'center',
-            alignItems: 'center',
+            height: 50,
+            width: '100%',
             flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 15,
+            justifyContent: 'center',
           }}>
-          <Image
-            source={require('../../public/icons/find.png')}
+          <View
             style={{
-              height: 20,
-              width: 20,
-              marginRight: 20,
-            }}
-          />
-          <TextInput
+              height: 40,
+              width: windowWidth * 0.734,
+              backgroundColor: '#fff',
+              borderRadius: 20,
+              borderWidth: 1,
+              borderColor: 'rgba(0, 0, 0, 0.29)',
+              paddingHorizontal: 15,
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <Image
+              source={require('../../public/icons/find.png')}
+              style={{
+                height: 20,
+                width: 20,
+                marginRight: 20,
+              }}
+            />
+            <TextInput
+              style={{
+                height: '100%',
+                flex: 1,
+                marginRight: 20,
+              }}
+              placeholder={'Search here'}
+              value={input}
+              onChangeText={setInput}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Mypage')}
             style={{
-              height: '100%',
-              flex: 1,
-              marginRight: 20,
-            }}
-            placeholder={'Search here'}
-            value={input}
-            onChangeText={setInput}
-          />
+              marginLeft: 7,
+            }}>
+            <Image
+              source={require('../../public/icons/mypage.png')}
+              style={{height: 40, width: 40}}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Mypage')}
+        <View
           style={{
-            marginLeft: 7,
+            height: 26,
+            width: '100%',
+            flexDirection: 'row',
+            marginTop: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          <Image
-            source={require('../../public/icons/mypage.png')}
-            style={{height: 40, width: 40}}
-          />
-        </TouchableOpacity>
+          <ScrollView
+            horizontal={true}
+            contentContainerStyle={{paddingHorizontal: 25}}
+            showsHorizontalScrollIndicator={false}
+            style={{height: 26}}>
+            <TouchableOpacity
+              onPress={() => {
+                category == 0 ? setCategory(-1) : setCategory(0);
+              }}
+              style={{
+                height: '100%',
+                paddingHorizontal: 8,
+                paddingVertical: 5,
+                backgroundColor: '#fff',
+                borderRadius: 20,
+                borderColor: category == 0 ? '#000' : 'rgba(0, 0, 0, 0.29)',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderWidth: category == 0 ? 2 : 1,
+                flexDirection: 'row',
+                marginRight: 5,
+              }}>
+              <Image
+                source={require('../../public/icons/restaurant.png')}
+                style={{height: 15, width: 15, marginRight: 4}}
+              />
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 13,
+                  fontWeight: '400',
+                  color: '#000',
+                }}>
+                Restaurant
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                category == 1 ? setCategory(-1) : setCategory(1);
+              }}
+              style={{
+                height: '100%',
+                paddingHorizontal: 8,
+                paddingVertical: 5,
+                backgroundColor: '#fff',
+                borderRadius: 20,
+                borderColor: category == 1 ? '#000' : 'rgba(0, 0, 0, 0.29)',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderWidth: category == 1 ? 2 : 1,
+                flexDirection: 'row',
+                marginRight: 5,
+              }}>
+              <Image
+                source={require('../../public/icons/cafe.png')}
+                style={{height: 15, width: 15, marginRight: 4}}
+              />
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 13,
+                  fontWeight: '400',
+                  color: '#000',
+                }}>
+                Cafe
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                category == 2 ? setCategory(-1) : setCategory(2);
+              }}
+              style={{
+                height: '100%',
+                paddingHorizontal: 8,
+                paddingVertical: 5,
+                backgroundColor: '#fff',
+                borderRadius: 20,
+                borderColor: category == 2 ? '#000' : 'rgba(0, 0, 0, 0.29)',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderWidth: category == 2 ? 2 : 1,
+                flexDirection: 'row',
+                marginRight: 5,
+              }}>
+              <Image
+                source={require('../../public/icons/shopping.png')}
+                style={{height: 15, width: 15, marginRight: 4}}
+              />
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 13,
+                  fontWeight: '400',
+                  color: '#000',
+                }}>
+                Shopping
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                category == 3 ? setCategory(-1) : setCategory(3);
+              }}
+              style={{
+                height: '100%',
+                paddingHorizontal: 8,
+                paddingVertical: 5,
+                backgroundColor: '#fff',
+                borderRadius: 20,
+                borderColor: category == 3 ? '#000' : 'rgba(0, 0, 0, 0.29)',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderWidth: category == 3 ? 2 : 1,
+                flexDirection: 'row',
+                marginRight: 5,
+              }}>
+              <Image
+                source={require('../../public/icons/landmark.png')}
+                style={{height: 15, width: 15, marginRight: 4}}
+              />
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 13,
+                  fontWeight: '400',
+                  color: '#000',
+                }}>
+                Landmark
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                category == 4 ? setCategory(-1) : setCategory(4);
+              }}
+              style={{
+                height: '100%',
+                paddingHorizontal: 8,
+                paddingVertical: 5,
+                backgroundColor: '#fff',
+                borderRadius: 20,
+                borderColor: category == 4 ? '#000' : 'rgba(0, 0, 0, 0.29)',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderWidth: category == 4 ? 2 : 1,
+                flexDirection: 'row',
+                marginRight: 5,
+              }}>
+              <Image
+                source={require('../../public/icons/museum.png')}
+                style={{height: 15, width: 15, marginRight: 4}}
+              />
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 13,
+                  fontWeight: '400',
+                  color: '#000',
+                }}>
+                Musuem
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
       </View>
-      <View
-        style={{
-          height: 26,
-          width: '100%',
-          flexDirection: 'row',
-          marginTop: 10,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <ScrollView horizontal={true} 
-          contentContainerStyle={{paddingHorizontal: 25}}
-          showsHorizontalScrollIndicator={false}
-          style={{height:26}}>
-        <TouchableOpacity
-          onPress={() => {
-            category == 0 ? setCategory(-1) : setCategory(0);
-          }}
-          style={{
-            height: '100%',
-            paddingHorizontal: 8,
-            paddingVertical: 5,
-            backgroundColor: '#fff',
-            borderRadius: 20,
-            borderColor: category == 0 ? '#000' : 'rgba(0, 0, 0, 0.29)',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderWidth: category == 0 ? 2 : 1,
-            flexDirection: 'row',
-            marginRight: 5,
-          }}>
-          <Image
-            source={require('../../public/icons/restaurant.png')}
-            style={{height: 15, width: 15, marginRight: 4}}
-          />
-          <Text
+      <View>
+        <BottomSheetModalProvider>
+          <View
             style={{
-              fontFamily: 'Inter',
-              includeFontPadding: false,
-              fontSize: 13,
-              fontWeight: '400',
-              color: '#000',
+              height: 50,
+              width: '100%',
+              backgroundColor: 'lightgreen',
             }}>
-            Restaurant
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            category == 1 ? setCategory(-1) : setCategory(1);
-          }}
-          style={{
-            height: '100%',
-            paddingHorizontal: 8,
-            paddingVertical: 5,
-            backgroundColor: '#fff',
-            borderRadius: 20,
-            borderColor: category == 1 ? '#000' : 'rgba(0, 0, 0, 0.29)',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderWidth: category == 1 ? 2 : 1,
-            flexDirection: 'row',
-            marginRight: 5,
-          }}>
-          <Image
-            source={require('../../public/icons/cafe.png')}
-            style={{height: 15, width: 15, marginRight: 4}}
-          />
-          <Text
-            style={{
-              fontFamily: 'Inter',
-              includeFontPadding: false,
-              fontSize: 13,
-              fontWeight: '400',
-              color: '#000',
-            }}>
-            Cafe
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            category == 2 ? setCategory(-1) : setCategory(2);
-          }}
-          style={{
-            height: '100%',
-            paddingHorizontal: 8,
-            paddingVertical: 5,
-            backgroundColor: '#fff',
-            borderRadius: 20,
-            borderColor: category == 2 ? '#000' : 'rgba(0, 0, 0, 0.29)',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderWidth: category == 2 ? 2 : 1,
-            flexDirection: 'row',
-            marginRight: 5,
-          }}>
-          <Image
-            source={require('../../public/icons/shopping.png')}
-            style={{height: 15, width: 15, marginRight: 4}}
-          />
-          <Text
-            style={{
-              fontFamily: 'Inter',
-              includeFontPadding: false,
-              fontSize: 13,
-              fontWeight: '400',
-              color: '#000',
-            }}>
-            Shopping
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            category == 3 ? setCategory(-1) : setCategory(3);
-          }}
-          style={{
-            height: '100%',
-            paddingHorizontal: 8,
-            paddingVertical: 5,
-            backgroundColor: '#fff',
-            borderRadius: 20,
-            borderColor: category == 3 ? '#000' : 'rgba(0, 0, 0, 0.29)',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderWidth: category == 3 ? 2 : 1,
-            flexDirection: 'row',
-            marginRight: 5,
-          }}>
-          <Image
-            source={require('../../public/icons/landmark.png')}
-            style={{height: 15, width: 15, marginRight: 4}}
-          />
-          <Text
-            style={{
-              fontFamily: 'Inter',
-              includeFontPadding: false,
-              fontSize: 13,
-              fontWeight: '400',
-              color: '#000',
-            }}>
-            Landmark
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            category == 4 ? setCategory(-1) : setCategory(4);
-          }}
-          style={{
-            height: '100%',
-            paddingHorizontal: 8,
-            paddingVertical: 5,
-            backgroundColor: '#fff',
-            borderRadius: 20,
-            borderColor: category == 4 ? '#000' : 'rgba(0, 0, 0, 0.29)',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderWidth: category == 4 ? 2 : 1,
-            flexDirection: 'row',
-            marginRight: 5,
-          }}>
-          <Image
-            source={require('../../public/icons/museum.png')}
-            style={{height: 15, width: 15, marginRight: 4}}
-          />
-          <Text
-            style={{
-              fontFamily: 'Inter',
-              includeFontPadding: false,
-              fontSize: 13,
-              fontWeight: '400',
-              color: '#000',
-            }}>
-            Musuem
-          </Text>
-        </TouchableOpacity>
-        </ScrollView>
+            <TouchableOpacity onPress={handlePresentModalPress}>
+              <Text>expand</Text>
+            </TouchableOpacity>
+          </View>
+          <BottomSheetModal
+            snapPoints={snapPoints}
+            ref={bottomSheetModalRef}
+            index={0}
+            enableContentPanningGesture={false}
+            backdropComponent={renderBackdrop}
+            onChange={handleSheetChanges}>
+            <Text>Hello</Text>
+          </BottomSheetModal>
+        </BottomSheetModalProvider>
       </View>
     </SafeAreaView>
   );
