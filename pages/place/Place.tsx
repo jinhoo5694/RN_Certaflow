@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import PlaceHeader from './PlaceHeader';
 import ChatMessage from '../chat/ChatMessage';
+import TipBox from '../tip/TipBox';
 
 export default function Place({navigation, route}) {
   return (
@@ -190,6 +191,13 @@ export default function Place({navigation, route}) {
                 name={'Sandy'}
                 time={'2mins ago'}
                 content={'sample content'}
+                likes={2}
+              />
+              <ChatMessage
+                name={'Anika'}
+                time={'30sec ago'}
+                content={'Bla Bla Bla Bla'}
+                likes={0}
               />
             </View>
           </View>
@@ -227,13 +235,20 @@ export default function Place({navigation, route}) {
                   <Text>Add my tip +</Text>
                 </TouchableOpacity>
               </View>
-              <View
-                style={{
-                  width: '100%',
-                  borderRadius: 10,
-                  backgroundColor: '#f5f5f5',
-                  height: 213,
-                }}
+              <TipBox
+                name={'Sandy'}
+                content={'Sample content'}
+                date={'2023 Sept 27'}
+                likes={1306}
+                dislikes={11}
+              />
+
+              <TipBox
+                name={'Marcus'}
+                content={'Sample content'}
+                date={'2022 Dec 31'}
+                likes={50}
+                dislikes={1}
               />
             </View>
           </View>
