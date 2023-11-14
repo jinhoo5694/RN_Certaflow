@@ -17,6 +17,7 @@ import {
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import EventCard from './EventCard';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 export default function Home({navigation}) {
   const [modal, setModal] = useState(true);
@@ -59,6 +60,7 @@ export default function Home({navigation}) {
   return (
     <SafeAreaView>
       <BottomSheetModalProvider>
+
         <View
           style={{
             height: '100%',
@@ -413,7 +415,17 @@ export default function Home({navigation}) {
               </View>
             </View>
           </Modal>
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, backgroundColor: 'lightgreen'}}>
+              <View style={{position: 'absolute', height: '100%', width: '100%'}}>
+                  <MapView provider={PROVIDER_GOOGLE}
+                           style={{height: '100%', width: '100%'}}
+                           region={{
+                               latitude: 36.363008,
+                               longitude: 127.356142,
+                               latitudeDelta: 0.015,
+                               longitudeDelta: 0.0121,
+                           }} />
+              </View>
             <View
               style={{
                 height: 50,
@@ -922,10 +934,6 @@ export default function Home({navigation}) {
               </View>
             </View>
           </Modal>
-          <TouchableOpacity onPress={() => navigation.navigate('Place')}>
-            <Text>Test place detail</Text>
-          </TouchableOpacity>
-          <View style={{flex: 1}} />
           <View
             style={{
               height: 60,
