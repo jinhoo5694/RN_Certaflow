@@ -118,19 +118,23 @@ export default function Home({navigation}) {
   const placeMarkers =
     dummyPlace &&
     dummyPlace.places.map(place => (
+      <View >
       <Marker
         key={dummyPlace && dummyPlace.places.indexOf(place)}
         coordinate={{
           latitude: place.latitude,
           longitude: place.longitude,
         }}
-        onPress={() => handleSecondModalPress(place)}>
+        onPress={() => handleSecondModalPress(place)}
+        style={{flexDirection: 'column', alignItems: 'center'}}
+        >
         <Image
           source={require('../../public/icons/not_congested.png')}
           style={{height: 46, width: 39.48, resizeMode: 'contain'}}
         />
-        <Text>{place.name}</Text>
+        <Text style={{fontSize:11, marginTop: 5, textAlign: 'center'}}>{place.name}</Text>
       </Marker>
+      </View>
     ));
 
   console.log(selectedPlace);
@@ -1194,6 +1198,9 @@ export default function Home({navigation}) {
                 />
               </TouchableOpacity>
             </View>
+            <ScrollView
+                style={{width: '100%', height: '100%'}}
+                showsVerticalScrollIndicator={false}>
             <View
               style={{
                 width: '100%',
@@ -1312,9 +1319,6 @@ export default function Home({navigation}) {
                 width: '100%',
                 paddingHorizontal: 20,
               }}>
-              <ScrollView
-                style={{width: '100%', height: '100%'}}
-                showsVerticalScrollIndicator={false}>
                 <View
                   style={{
                     width: '100%',
@@ -1437,8 +1441,8 @@ export default function Home({navigation}) {
                     />
                   </View>
                 </View>
-              </ScrollView>
             </View>
+            </ScrollView>
           </View>
         </BottomSheetModal>
       </BottomSheetModalProvider>

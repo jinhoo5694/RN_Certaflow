@@ -5,7 +5,7 @@ export default function High(props: any) {
   return (
     <View
       style={{
-        height: 30,
+        height: 27,
         alignSelf: 'center',
         borderRadius: 6,
         borderWidth: 1,
