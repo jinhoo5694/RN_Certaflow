@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   SafeAreaView,
@@ -12,6 +13,12 @@ import {
 
 export default function Tip({navigation}) {
   const [input, setInput] = useState('');
+
+  function sendTip() {
+    Alert.alert('finished');
+    navigation.goBack();
+  }
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View
@@ -115,7 +122,33 @@ export default function Tip({navigation}) {
             value={input}
             onChangeText={setInput}
           />
+          <Text style={{textAlign: 'right'}}>
+            {input.length.toString() + '/2000'}
+          </Text>
         </View>
+        <TouchableOpacity disabled={input.length < 1} onPress={() => sendTip()}>
+          <View
+            style={{
+              height: 49,
+              width: 200,
+              borderRadius: 50,
+              backgroundColor: input.length ? '#000' : '#cacaca',
+              marginTop: 26,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 17,
+                fontWeight: '600',
+                color: '#fff',
+              }}>
+              Register
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
