@@ -12,12 +12,28 @@ import {
   View,
 } from 'react-native';
 import ChatMessage from './ChatMessage';
+import MyChatMessage from './MyChatMessage';
 
 export default function Chat({navigation, route}) {
   const place = route.params.place;
   const [confirm, setConfirm] = useState(false);
   const [modal, setModal] = useState(false);
   const [input, setInput] = useState('');
+  const [myChat, setMyChat] = useState([]);
+
+  function sendChat() {
+    const chatMessage = (
+      <MyChatMessage
+        key={new Date()}
+        time={'1 sec ago'}
+        content={input}
+        likes={0}
+      />
+    );
+    setMyChat(prevState => [...prevState, chatMessage]);
+    setInput('');
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -178,6 +194,7 @@ export default function Chat({navigation, route}) {
           content={'sample content'}
           likes={10}
         />
+        {myChat}
       </ScrollView>
       <View
         style={{
@@ -225,7 +242,7 @@ export default function Chat({navigation, route}) {
           )}
         </View>
         {confirm ? (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => sendChat()}>
             <Image
               source={require('../../public/icons/send.png')}
               style={{
