@@ -1,9 +1,11 @@
 import * as React from 'react';
-import {useCallback, useMemo, useRef, useState} from 'react';
+import {useCallback, useMemo, useRef, useState, useEffect} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   Text,
@@ -17,7 +19,8 @@ import {
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import EventCard from './EventCard';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import Geolocation from 'react-native-geolocation-service';
 
 export default function Home({navigation}) {
   const [modal, setModal] = useState(true);
@@ -31,6 +34,37 @@ export default function Home({navigation}) {
   const [selected, setSelected] = useState(0);
   const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
+  const [position, setPosition] = useState();
+
+  async function requestPermission() {
+    try {
+      if (Platform.OS === 'ios') {
+        return await Geolocation.requestAuthorization('always');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  useEffect(() => {
+    requestPermission().then(result => {
+      if (result === 'granted') {
+        Geolocation.getCurrentPosition(
+          pos => {
+            setPosition(pos);
+          },
+          error => {
+            console.log(error);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 3600,
+            maximumAge: 3600,
+          },
+        );
+      }
+    });
+  }, []);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   // variables
@@ -60,7 +94,6 @@ export default function Home({navigation}) {
   return (
     <SafeAreaView>
       <BottomSheetModalProvider>
-
         <View
           style={{
             height: '100%',
@@ -416,16 +449,36 @@ export default function Home({navigation}) {
             </View>
           </Modal>
           <View style={{flex: 1, backgroundColor: 'lightgreen'}}>
-              <View style={{position: 'absolute', height: '100%', width: '100%'}}>
-                  <MapView provider={PROVIDER_GOOGLE}
-                           style={{height: '100%', width: '100%'}}
-                           region={{
-                               latitude: 36.363008,
-                               longitude: 127.356142,
-                               latitudeDelta: 0.015,
-                               longitudeDelta: 0.0121,
-                           }} />
-              </View>
+            <View style={{position: 'absolute', height: '100%', width: '100%'}}>
+              <MapView
+                provider={PROVIDER_GOOGLE}
+                style={{height: '100%', width: '100%'}}
+                region={{
+                  latitude: position && position.coords.latitude,
+                  longitude: position && position.coords.longitude,
+                  latitudeDelta: 0.015,
+                  longitudeDelta: 0.0121,
+                }}
+                customMapStyle={[
+                  {
+                    featureType: 'poi',
+                    elementType: 'labels.icon',
+                    stylers: [{visibility: 'off'}],
+                  },
+                ]}>
+                <Marker
+                  coordinate={{
+                    latitude: position && position.coords.latitude,
+                    longitude: position && position.coords.longitude,
+                  }}
+                  onPress={() => Alert.alert('hello')}>
+                  <Image
+                    source={require('../../public/icons/not_congested.png')}
+                    style={{height: 46, width: 39.48}}
+                  />
+                </Marker>
+              </MapView>
+            </View>
             <View
               style={{
                 height: 50,
