@@ -26,6 +26,107 @@ export default function Home({navigation}) {
   const windowWidth = Dimensions.get('window').width;
 
 
+<<<<<<< Updated upstream
+=======
+  useEffect(() => {
+    requestPermission().then(result => {
+      if (result === 'granted') {
+        Geolocation.getCurrentPosition(
+          pos => {
+            setPosition(pos);
+          },
+          error => {
+            console.log(error);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 3600,
+            maximumAge: 3600,
+          },
+        );
+      }
+    });
+  }, []);
+
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const secondBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  // variables
+  const snapPoints = useMemo(() => ['80%'], []); // Here we add '0%' to make it start from the bottom
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSecondModalPress = useCallback((place: object) => {
+    secondBottomSheetModalRef.current?.present();
+    setSelectedPlace(place);
+  }, []);
+  const close = useCallback(() => {
+    bottomSheetModalRef.current?.dismiss();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+  const handleSecondSheetChanges = useCallback((index: number) => {
+    console.log('second', index);
+  }, []);
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior={'close'}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    [],
+  );
+  const secondRenderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior={'close'}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    [],
+  );
+
+  const placeMarkers =
+    dummyPlace &&
+    dummyPlace.places.map(place => (
+      <View >
+      <Marker
+        key={dummyPlace && dummyPlace.places.indexOf(place)}
+        coordinate={{
+          latitude: place.latitude,
+          longitude: place.longitude,
+        }}
+        onPress={() => handleSecondModalPress(place)}
+        style={{flexDirection: 'column', alignItems: 'center'}}
+        >
+        {place.congestion == 0 ? 
+        <Image
+          source={require('../../public/icons/not_congested.png')}
+          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+        /> : 
+        place.congestion == 1 ? 
+        <Image
+          source={require('../../public/icons/slightly_congested.png')}
+          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+        /> :
+        <Image
+          source={require('../../public/icons/very_congested.png')}
+          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+        />
+        }
+        <Text style={{fontSize:11, marginTop: 5, textAlign: 'center'}}>{place.name}</Text>
+      </Marker>
+      </View>
+    ));
+
+  console.log(selectedPlace);
+>>>>>>> Stashed changes
 
   return (
     <SafeAreaView>
