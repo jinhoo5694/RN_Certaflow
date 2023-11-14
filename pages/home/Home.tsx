@@ -518,7 +518,7 @@ export default function Home({navigation}) {
                   onPress={() => Alert.alert('hello')}>
                   <Image
                     source={require('../../public/images/cat.png')}
-                    style={{height: 50, width: 50, resizeMode: 'contain'}}
+                    style={{height: 80, width: 80, resizeMode: 'contain'}}
                   />
                 </Marker>
                 {placeMarkers}
