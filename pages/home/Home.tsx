@@ -40,6 +40,7 @@ export default function Home({navigation}) {
   const windowWidth = Dimensions.get('window').width;
   const [position, setPosition] = useState();
   const [selectedPlace, setSelectedPlace] = useState(dummyPlace.places[0]);
+  const [bookmark, setBookmark] = useState(false);
 
   async function requestPermission() {
     try {
@@ -1191,9 +1192,13 @@ export default function Home({navigation}) {
                 </View>
                 {<Low />}
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => setBookmark(!bookmark)}>
                 <Image
-                  source={require('../../public/icons/bookMark.png')}
+                  source={
+                    bookmark
+                      ? require('../../public/icons/bookMark.png')
+                      : require('../../public/icons/bookMarkNone.png')
+                  }
                   style={{height: 30, width: 30, resizeMode: 'contain'}}
                 />
               </TouchableOpacity>
