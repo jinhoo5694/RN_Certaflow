@@ -119,7 +119,6 @@ export default function Home({navigation}) {
   const placeMarkers =
     dummyPlace &&
     dummyPlace.places.map(place => (
-      <View >
       <Marker
         key={dummyPlace && dummyPlace.places.indexOf(place)}
         coordinate={{
@@ -127,15 +126,15 @@ export default function Home({navigation}) {
           longitude: place.longitude,
         }}
         onPress={() => handleSecondModalPress(place)}
-        style={{flexDirection: 'column', alignItems: 'center'}}
-        >
+        style={{flexDirection: 'column', alignItems: 'center'}}>
         <Image
           source={require('../../public/icons/not_congested.png')}
           style={{height: 46, width: 39.48, resizeMode: 'contain'}}
         />
-        <Text style={{fontSize:11, marginTop: 5, textAlign: 'center'}}>{place.name}</Text>
+        <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
+          {place.name}
+        </Text>
       </Marker>
-      </View>
     ));
 
   console.log(selectedPlace);
@@ -1204,126 +1203,126 @@ export default function Home({navigation}) {
               </TouchableOpacity>
             </View>
             <ScrollView
-                style={{width: '100%', height: '100%'}}
-                showsVerticalScrollIndicator={false}>
-            <View
-              style={{
-                width: '100%',
-                paddingLeft: 42,
-                paddingVertical: 18,
-                backgroundColor: '#f4f4f4',
-              }}>
+              style={{width: '100%', height: '100%'}}
+              showsVerticalScrollIndicator={false}>
               <View
                 style={{
                   width: '100%',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: 10,
+                  paddingLeft: 42,
+                  paddingVertical: 18,
+                  backgroundColor: '#f4f4f4',
                 }}>
-                <Image
-                  source={require('../../public/icons/location.png')}
+                <View
                   style={{
-                    height: 17,
-                    width: 17,
-                    marginRight: 10,
-                  }}
-                />
-                <Text
-                  style={{
-                    fontFamily: 'Inter',
-                    includeFontPadding: false,
-                    fontSize: 14,
-                    fontWeight: '300',
-                    color: '#000',
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 10,
                   }}>
-                  {selectedPlace.address}
-                </Text>
+                  <Image
+                    source={require('../../public/icons/location.png')}
+                    style={{
+                      height: 17,
+                      width: 17,
+                      marginRight: 10,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      includeFontPadding: false,
+                      fontSize: 14,
+                      fontWeight: '300',
+                      color: '#000',
+                    }}>
+                    {selectedPlace.address}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 10,
+                  }}>
+                  <Image
+                    source={require('../../public/icons/time.png')}
+                    style={{
+                      height: 17,
+                      width: 17,
+                      marginRight: 10,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      includeFontPadding: false,
+                      fontSize: 14,
+                      fontWeight: '300',
+                      color: '#000',
+                    }}>
+                    {selectedPlace.openhour}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 10,
+                  }}>
+                  <Image
+                    source={require('../../public/icons/phone.png')}
+                    style={{
+                      height: 17,
+                      width: 17,
+                      marginRight: 10,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      includeFontPadding: false,
+                      fontSize: 14,
+                      fontWeight: '300',
+                      color: '#000',
+                    }}>
+                    {selectedPlace['phone number']}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Image
+                    source={require('../../public/icons/home.png')}
+                    style={{
+                      height: 17,
+                      width: 17,
+                      marginRight: 10,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      includeFontPadding: false,
+                      fontSize: 14,
+                      fontWeight: '300',
+                      color: '#000',
+                    }}>
+                    {selectedPlace.homepage}
+                  </Text>
+                </View>
               </View>
               <View
                 style={{
+                  flex: 1,
+                  backgroundColor: '#fff',
                   width: '100%',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: 10,
+                  paddingHorizontal: 20,
                 }}>
-                <Image
-                  source={require('../../public/icons/time.png')}
-                  style={{
-                    height: 17,
-                    width: 17,
-                    marginRight: 10,
-                  }}
-                />
-                <Text
-                  style={{
-                    fontFamily: 'Inter',
-                    includeFontPadding: false,
-                    fontSize: 14,
-                    fontWeight: '300',
-                    color: '#000',
-                  }}>
-                  {selectedPlace.openhour}
-                </Text>
-              </View>
-              <View
-                style={{
-                  width: '100%',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: 10,
-                }}>
-                <Image
-                  source={require('../../public/icons/phone.png')}
-                  style={{
-                    height: 17,
-                    width: 17,
-                    marginRight: 10,
-                  }}
-                />
-                <Text
-                  style={{
-                    fontFamily: 'Inter',
-                    includeFontPadding: false,
-                    fontSize: 14,
-                    fontWeight: '300',
-                    color: '#000',
-                  }}>
-                  {selectedPlace['phone number']}
-                </Text>
-              </View>
-              <View
-                style={{
-                  width: '100%',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Image
-                  source={require('../../public/icons/home.png')}
-                  style={{
-                    height: 17,
-                    width: 17,
-                    marginRight: 10,
-                  }}
-                />
-                <Text
-                  style={{
-                    fontFamily: 'Inter',
-                    includeFontPadding: false,
-                    fontSize: 14,
-                    fontWeight: '300',
-                    color: '#000',
-                  }}>
-                  {selectedPlace.homepage}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: '#fff',
-                width: '100%',
-                paddingHorizontal: 20,
-              }}>
                 <View
                   style={{
                     width: '100%',
@@ -1447,7 +1446,7 @@ export default function Home({navigation}) {
                     />
                   </View>
                 </View>
-            </View>
+              </View>
             </ScrollView>
           </View>
         </BottomSheetModal>
