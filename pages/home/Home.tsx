@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useCallback, useMemo, useRef, useState, useEffect} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -21,6 +21,10 @@ import {
 import EventCard from './EventCard';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
+import dummyPlace from '../../components/data/dummyPlace.json';
+import ChatMessage from '../chat/ChatMessage';
+import TipBox from '../tip/TipBox';
+import Low from '../../components/congest/Low';
 
 export default function Home({navigation}) {
   const [modal, setModal] = useState(true);
@@ -35,6 +39,7 @@ export default function Home({navigation}) {
   const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
   const [position, setPosition] = useState();
+  const [selectedPlace, setSelectedPlace] = useState(dummyPlace.places[0]);
 
   async function requestPermission() {
     try {
@@ -67,17 +72,25 @@ export default function Home({navigation}) {
   }, []);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const secondBottomSheetModalRef = useRef<BottomSheetModal>(null);
   // variables
   const snapPoints = useMemo(() => ['80%'], []); // Here we add '0%' to make it start from the bottom
   // callbacks
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+  const handleSecondModalPress = useCallback((place: object) => {
+    secondBottomSheetModalRef.current?.present();
+    setSelectedPlace(place);
+  }, []);
   const close = useCallback(() => {
     bottomSheetModalRef.current?.dismiss();
   }, []);
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
+  }, []);
+  const handleSecondSheetChanges = useCallback((index: number) => {
+    console.log('second', index);
   }, []);
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -90,6 +103,37 @@ export default function Home({navigation}) {
     ),
     [],
   );
+  const secondRenderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior={'close'}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    [],
+  );
+
+  const placeMarkers =
+    dummyPlace &&
+    dummyPlace.places.map(place => (
+      <Marker
+        key={dummyPlace && dummyPlace.places.indexOf(place)}
+        coordinate={{
+          latitude: place.latitude,
+          longitude: place.longitude,
+        }}
+        onPress={() => handleSecondModalPress(place)}>
+        <Image
+          source={require('../../public/icons/not_congested.png')}
+          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+        />
+        <Text>{place.name}</Text>
+      </Marker>
+    ));
+
+  console.log(selectedPlace);
 
   return (
     <SafeAreaView>
@@ -473,10 +517,11 @@ export default function Home({navigation}) {
                   }}
                   onPress={() => Alert.alert('hello')}>
                   <Image
-                    source={require('../../public/icons/not_congested.png')}
-                    style={{height: 46, width: 39.48}}
+                    source={require('../../public/images/cat.png')}
+                    style={{height: 50, width: 50, resizeMode: 'contain'}}
                   />
                 </Marker>
+                {placeMarkers}
               </MapView>
             </View>
             <View
@@ -1047,6 +1092,350 @@ export default function Home({navigation}) {
               <EventCard />
               <EventCard />
             </ScrollView>
+          </View>
+        </BottomSheetModal>
+        <BottomSheetModal
+          snapPoints={snapPoints}
+          ref={secondBottomSheetModalRef}
+          index={0}
+          enableContentPanningGesture={false}
+          backdropComponent={renderBackdrop}
+          onChange={handleSecondSheetChanges}>
+          <View style={{width: '100%', height: '100%'}}>
+            <View
+              style={{
+                width: windowWidth,
+                backgroundColor: '#fff',
+                flexDirection: 'row',
+                // alignItems: 'center',
+                paddingHorizontal: 26,
+                paddingVertical: 24,
+              }}>
+              <TouchableOpacity>
+                <Image
+                  source={require('../../public/icons/addPlan.png')}
+                  style={{
+                    width: 24,
+                    height: 24,
+                  }}
+                />
+              </TouchableOpacity>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 13,
+                    fontWeight: '400',
+                    color: '#bbb4b5',
+                    marginBottom: 5,
+                  }}>
+                  {selectedPlace.category}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 17,
+                    fontWeight: '600',
+                    color: '#000',
+                  }}>
+                  {selectedPlace.name}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    marginTop: 5,
+                    marginBottom: 10,
+                  }}>
+                  <Image
+                    source={require('../../public/icons/star_empty.png')}
+                    style={{
+                      height: 16,
+                      width: 16,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      includeFontPadding: false,
+                      fontSize: 13,
+                      fontWeight: '300',
+                      color: '#000',
+                    }}>
+                    {selectedPlace.rating}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      includeFontPadding: false,
+                      fontSize: 13,
+                      fontWeight: '300',
+                      color: '#000',
+                    }}>
+                    {' / 5.0'}
+                  </Text>
+                </View>
+                {<Low />}
+              </View>
+              <TouchableOpacity>
+                <Image
+                  source={require('../../public/icons/bookMark.png')}
+                  style={{height: 30, width: 30, resizeMode: 'contain'}}
+                />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                width: '100%',
+                paddingLeft: 42,
+                paddingVertical: 18,
+                backgroundColor: '#f4f4f4',
+              }}>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 10,
+                }}>
+                <Image
+                  source={require('../../public/icons/location.png')}
+                  style={{
+                    height: 17,
+                    width: 17,
+                    marginRight: 10,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 14,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {selectedPlace.address}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 10,
+                }}>
+                <Image
+                  source={require('../../public/icons/time.png')}
+                  style={{
+                    height: 17,
+                    width: 17,
+                    marginRight: 10,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 14,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {selectedPlace.openhour}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 10,
+                }}>
+                <Image
+                  source={require('../../public/icons/phone.png')}
+                  style={{
+                    height: 17,
+                    width: 17,
+                    marginRight: 10,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 14,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {selectedPlace['phone number']}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={require('../../public/icons/home.png')}
+                  style={{
+                    height: 17,
+                    width: 17,
+                    marginRight: 10,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 14,
+                    fontWeight: '300',
+                    color: '#000',
+                  }}>
+                  {selectedPlace.homepage}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: '#fff',
+                width: '100%',
+                paddingHorizontal: 20,
+              }}>
+              <ScrollView
+                style={{width: '100%', height: '100%'}}
+                showsVerticalScrollIndicator={false}>
+                <View
+                  style={{
+                    width: '100%',
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#d9d9d9',
+                    paddingVertical: 20,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      width: '100%',
+                      marginBottom: 11,
+                    }}>
+                    <Image
+                      source={require('../../public/icons/chat.png')}
+                      style={{
+                        height: 20,
+                        width: 20,
+                        marginRight: 8,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: 'Inter',
+                        includeFontPadding: false,
+                        fontSize: 15,
+                        fontWeight: '600',
+                        color: '#000',
+                      }}>
+                      LIVE CHAT
+                    </Text>
+                    <View style={{flex: 1}} />
+                    <TouchableOpacity>
+                      <Image
+                        source={require('../../public/icons/refresh.png')}
+                        style={{
+                          height: 20,
+                          width: 20,
+                          resizeMode: 'contain',
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      width: '100%',
+                      borderRadius: 10,
+                      backgroundColor: '#f5f5f5',
+                      padding: 13,
+                    }}>
+                    <ChatMessage
+                      name={'Sandy'}
+                      time={'2mins ago'}
+                      content={'sample content'}
+                      likes={2}
+                    />
+                    <ChatMessage
+                      name={'Anika'}
+                      time={'30sec ago'}
+                      content={'Bla Bla Bla Bla'}
+                      likes={0}
+                    />
+                  </View>
+                </View>
+                <View
+                  style={{
+                    width: '100%',
+                  }}>
+                  <View
+                    style={{
+                      width: '100%',
+                      paddingVertical: 20,
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        width: '100%',
+                        marginBottom: 11,
+                      }}>
+                      <Image
+                        source={require('../../public/icons/pin.png')}
+                        style={{
+                          height: 20,
+                          width: 20,
+                          marginRight: 8,
+                        }}
+                      />
+                      <Text
+                        style={{
+                          fontFamily: 'Inter',
+                          includeFontPadding: false,
+                          fontSize: 15,
+                          fontWeight: '600',
+                          color: '#000',
+                        }}>
+                        Tips
+                      </Text>
+                      <View style={{flex: 1}} />
+                      <TouchableOpacity>
+                        <Text>Add my tip +</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <TipBox
+                      name={'Sandy'}
+                      content={'Sample content'}
+                      date={'2023 Sept 27'}
+                      likes={1306}
+                      dislikes={11}
+                    />
+
+                    <TipBox
+                      name={'Marcus'}
+                      content={'Sample content'}
+                      date={'2022 Dec 31'}
+                      likes={50}
+                      dislikes={1}
+                    />
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
           </View>
         </BottomSheetModal>
       </BottomSheetModalProvider>
