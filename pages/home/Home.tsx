@@ -1416,7 +1416,8 @@ export default function Home({navigation}) {
                         Tips
                       </Text>
                       <View style={{flex: 1}} />
-                      <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate('Tip')}>
                         <Text>Add my tip +</Text>
                       </TouchableOpacity>
                     </View>
