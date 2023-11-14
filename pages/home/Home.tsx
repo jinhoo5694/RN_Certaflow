@@ -1358,7 +1358,10 @@ export default function Home({navigation}) {
                       />
                     </TouchableOpacity>
                   </View>
-                  <View
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('Chat', {place: selectedPlace})
+                    }
                     style={{
                       width: '100%',
                       borderRadius: 10,
@@ -1377,7 +1380,7 @@ export default function Home({navigation}) {
                       content={'Bla Bla Bla Bla'}
                       likes={0}
                     />
-                  </View>
+                  </TouchableOpacity>
                 </View>
                 <View
                   style={{

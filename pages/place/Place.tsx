@@ -180,7 +180,7 @@ export default function Place({navigation, route}) {
                 />
               </TouchableOpacity>
             </View>
-            <View
+            <TouchableOpacity
               style={{
                 width: '100%',
                 borderRadius: 10,
@@ -199,7 +199,7 @@ export default function Place({navigation, route}) {
                 content={'Bla Bla Bla Bla'}
                 likes={0}
               />
-            </View>
+            </TouchableOpacity>
           </View>
           <View
             style={{
