@@ -1,10 +1,122 @@
 import * as React from 'react';
-import {View, Text} from 'react-native';
+import {useState} from 'react';
+import {
+  Dimensions,
+  Image,
+  SafeAreaView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function Tip({navigation}) {
+  const [input, setInput] = useState('');
   return (
-    <View>
-      <Text>This is tip page</Text>
-    </View>
-  )
+    <SafeAreaView style={{flex: 1}}>
+      <View
+        style={{
+          backgroundColor: '#fff',
+          flexDirection: 'row',
+          width: Dimensions.get('window').width,
+          height: 73,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            source={require('../../public/icons/back.png')}
+            style={{
+              height: 20,
+              width: 20,
+              resizeMode: 'contain',
+              marginLeft: 25,
+            }}
+          />
+        </TouchableOpacity>
+        <View style={{flex: 1}}>
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 20,
+              fontWeight: '600',
+              color: '#000',
+              textAlign: 'center',
+            }}>
+            Add my tip
+          </Text>
+        </View>
+        <View style={{width: 45}} />
+      </View>
+      <Image
+        source={require('../../public/images/tip.png')}
+        style={{
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').width * 0.412,
+          resizeMode: 'contain',
+          backgroundColor: 'red',
+        }}
+      />
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#fff',
+          alignItems: 'center',
+          paddingVertical: 26,
+        }}>
+        <TouchableOpacity>
+          <Image
+            source={require('../../public/icons/addCircle.png')}
+            style={{
+              height: 60,
+              width: 60,
+            }}
+          />
+        </TouchableOpacity>
+        <Text
+          style={{
+            textAlign: 'center',
+            marginTop: 10,
+            fontFamily: 'Inter',
+            includeFontPadding: false,
+            fontSize: 12,
+            fontWeight: '300',
+            color: '#000',
+          }}>
+          Add images
+        </Text>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontFamily: 'Inter',
+            includeFontPadding: false,
+            fontSize: 12,
+            fontWeight: '300',
+            color: '#000',
+          }}>
+          0/10
+        </Text>
+        <View
+          style={{
+            width: Dimensions.get('window').width * 0.898,
+            height: 224,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: '#c6c6c6',
+            marginTop: 32,
+            padding: 25,
+          }}>
+          <TextInput
+            style={{
+              width: '100%',
+              height: 150,
+            }}
+            value={input}
+            onChangeText={setInput}
+          />
+        </View>
+      </View>
+    </SafeAreaView>
+  );
 }
