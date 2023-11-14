@@ -35,13 +35,18 @@ export default function Home({navigation}) {
   const [location, setLocation] = useState(false);
   const [place, setPlace] = useState('Woody Room');
   const [surveyed, setSurveyed] = useState(false);
-  const [sumbitted, setPointalert] = useState(false);
+  const [submit_alert, setPointalert] = useState(false);
+  const [submitted, setLocationSumbit] = useState(false);
   const [selected, setSelected] = useState(0);
-  const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
-  const windowWidth = Dimensions.get('window').width;
   const [position, setPosition] = useState();
   const [selectedPlace, setSelectedPlace] = useState(dummyPlace.places[0]);
   const [bookmark, setBookmark] = useState(false);
+  const [congestion, setCongestion] = useState(false);
+  const [locationinfo, setLocationInfo] = useState(false);
+
+  const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
 
   async function requestPermission() {
     try {
@@ -508,7 +513,9 @@ export default function Home({navigation}) {
               </View>
             </View>
           </Modal>
+
           <View style={{flex: 1, backgroundColor: 'lightgreen'}}>
+
             <View style={{position: 'absolute', height: '100%', width: '100%'}}>
               <MapView
                 provider={PROVIDER_GOOGLE}
@@ -540,6 +547,7 @@ export default function Home({navigation}) {
                 {placeMarkers}
               </MapView>
             </View>
+
             <View
               style={{
                 height: 50,
@@ -592,7 +600,8 @@ export default function Home({navigation}) {
                 />
               </TouchableOpacity>
             </View>
-            <View
+
+            <View 
               style={{
                 height: 26,
                 width: '100%',
@@ -768,7 +777,57 @@ export default function Home({navigation}) {
                 </TouchableOpacity>
               </ScrollView>
             </View>
+          
+            <TouchableOpacity
+              onPress={() => setLocationInfo(!locationinfo)}
+              style={{
+                height: 40, width: 40,
+                marginTop: 15,
+                marginRight: 15,
+                alignSelf: 'flex-end',
+                justifyContent: 'flex-end'
+              }}>
+              {submitted ? 
+                locationinfo ? 
+                  <Image
+                  source={require('../../public/icons/location_black.png')}
+                  style={{height: 40, width: 40, marginRight: 10}}
+                  /> :
+                  <Image
+                    source={require('../../public/icons/location_white.png')}
+                    style={{height: 40, width: 40, marginRight: 10}}
+                  /> 
+               : locationinfo?
+                  <Image
+                      source={require('../../public/icons/no_location_black.png')}
+                      style={{height: 40, width: 40, marginRight: 10}}
+                  /> : 
+                  <Image
+                      source={require('../../public/icons/no_location_white.png')}
+                      style={{height: 40, width: 40, marginRight: 10}}
+                  />}
+            </TouchableOpacity>
+    
+            <TouchableOpacity
+                onPress={() => setCongestion(!congestion)}
+                style={{
+                  height: 50, width: 50,
+                  marginTop: windowHeight * 0.56,
+                  marginRight: 10,
+                  alignSelf: 'flex-end'
+                }}>
+                {congestion ? <Image
+                  source={require('../../public/icons/congest_button_black.png')}
+                  style={{height: 50, width: 50, marginRight: 10}}
+                /> :
+                <Image
+                  source={require('../../public/icons/congest_button_white.png')}
+                  style={{height: 50, width: 50, marginRight: 10}}
+                />
+                }
+            </TouchableOpacity>
           </View>
+
           <Modal
             visible={location}
             style={{
@@ -997,6 +1056,7 @@ export default function Home({navigation}) {
                       onPress={() => {
                         setLocation(false);
                         setPointalert(true);
+                        setLocationSumbit(true);
                       }}
                       style={{
                         height: 32,
@@ -1051,7 +1111,7 @@ export default function Home({navigation}) {
           </Modal>
 
           <Modal
-            visible={sumbitted}
+            visible={submit_alert}
             style={{
               height: Dimensions.get('window').height,
               width: Dimensions.get('window').width,
@@ -1198,6 +1258,7 @@ export default function Home({navigation}) {
             </TouchableOpacity>
           </View>
         </View>
+
         <BottomSheetModal
           snapPoints={snapPoints}
           style={{paddingHorizontal: 29}}
@@ -1230,6 +1291,7 @@ export default function Home({navigation}) {
             </ScrollView>
           </View>
         </BottomSheetModal>
+        
         <BottomSheetModal
           snapPoints={snapPoints}
           ref={secondBottomSheetModalRef}
@@ -1582,6 +1644,7 @@ export default function Home({navigation}) {
             </ScrollView>
           </View>
         </BottomSheetModal>
+        
       </BottomSheetModalProvider>
     </SafeAreaView>
   );
