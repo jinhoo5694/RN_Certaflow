@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView
 } from 'react-native';
 
 export default function Tip({navigation}) {
@@ -56,6 +57,9 @@ export default function Tip({navigation}) {
         </View>
         <View style={{width: 45}} />
       </View>
+      <ScrollView
+          style={{width: '100%', height: '100%'}}
+          showsVerticalScrollIndicator={false}>
       <Image
         source={require('../../public/images/tip.png')}
         style={{
@@ -150,6 +154,7 @@ export default function Tip({navigation}) {
           </View>
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

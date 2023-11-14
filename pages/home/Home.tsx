@@ -35,6 +35,7 @@ export default function Home({navigation}) {
   const [location, setLocation] = useState(false);
   const [place, setPlace] = useState('Woody Room');
   const [surveyed, setSurveyed] = useState(false);
+  const [sumbitted, setPointalert] = useState(false);
   const [selected, setSelected] = useState(0);
   const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
@@ -808,7 +809,7 @@ export default function Home({navigation}) {
                       fontWeight: '500',
                       fontSize: 13,
                     }}>
-                    Are you current at {place}?{' '}
+                    Are you currently at {place}?{' '}
                   </Text>
                   <Text>How congested is it?</Text>
                 </View>
@@ -995,6 +996,7 @@ export default function Home({navigation}) {
                     <TouchableOpacity
                       onPress={() => {
                         setLocation(false);
+                        setPointalert(true);
                       }}
                       style={{
                         height: 32,
@@ -1047,6 +1049,125 @@ export default function Home({navigation}) {
               </View>
             </View>
           </Modal>
+
+          <Modal
+            visible={sumbitted}
+            style={{
+              height: Dimensions.get('window').height,
+              width: Dimensions.get('window').width,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            transparent={true}>
+            <View
+              style={{
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                height: '100%',
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+                <View
+                style={{
+                  height: 200,
+                  width: windowWidth * 0.75,
+                  backgroundColor: '#fff',
+                  borderRadius: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                  <Text style={{
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        textAlign: 'center',
+                      }}> Thank you for participating the survey! </Text>
+                  <Text style={{
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        textAlign: 'center',
+                      }}> You earned 5 points. 🎉 </Text>
+                  <Text style={{
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        textAlign: 'center',
+                        marginTop: 10
+                      }}> Your current points are </Text>
+                  <Text style={{
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        textAlign: 'center',
+                      }}> <Text style={{
+                        fontFamily: 'Inter',
+                        fontSize: 17,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        marginTop: 10
+                      }}> 30 </Text>points.</Text>
+
+                    <View 
+                      style={{
+                        flexDirection: 'row', 
+                        marginTop: 20,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setPointalert(false);
+                        }}
+                        style={{
+                          height: 32,
+                          width: '35%',
+                          marginRight: 15,
+                          borderRadius: 20,
+                          borderColor: '#000',
+                          borderWidth: 1,
+                          backgroundColor: '#FFF',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            fontFamily: 'Inter',
+                            includeFontPadding: false,
+                            fontSize: 14,
+                            fontWeight: '500',
+                            color: '#000',
+                          }}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          setPointalert(false);
+                        }}
+                        style={{
+                          height: 32,
+                          width: '35%',
+                          marginRight: 15,
+                          borderRadius: 20,
+                          borderWidth: 1,
+                          backgroundColor: '#000',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            fontFamily: 'Inter',
+                            includeFontPadding: false,
+                            fontSize: 14,
+                            fontWeight: '500',
+                            color: '#fff',
+                          }}>
+                          Confirm
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+          </Modal>
+
           <View
             style={{
               height: 60,
