@@ -127,10 +127,21 @@ export default function Home({navigation}) {
         }}
         onPress={() => handleSecondModalPress(place)}
         style={{flexDirection: 'column', alignItems: 'center'}}>
+        {place.congestion == 0 ? 
         <Image
           source={require('../../public/icons/not_congested.png')}
           style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+        /> : 
+        place.congestion == 1 ? 
+        <Image
+          source={require('../../public/icons/slight_congested.png')}
+          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+        /> :
+        <Image
+          source={require('../../public/icons/very_congested.png')}
+          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
         />
+        }
         <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
           {place.name}
         </Text>
