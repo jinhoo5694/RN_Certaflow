@@ -84,6 +84,7 @@ export default function Home({navigation}) {
   const secondBottomSheetModalRef = useRef<BottomSheetModal>(null);
   // variables
   const snapPoints = useMemo(() => ['80%'], []); // Here we add '0%' to make it start from the bottom
+  const secondSnapPoints = useMemo(() => ['90%'], []);
   // callbacks
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -203,6 +204,16 @@ export default function Home({navigation}) {
       return <Middle />;
     } else {
       return <High />;
+    }
+  }
+
+  function getCongestionColor(place: object) {
+    if (place.congestion == 0) {
+      return '#00990f';
+    } else if (place.congestion == 1) {
+      return '#ecaa00';
+    } else {
+      return '#c80000';
     }
   }
 
@@ -1371,13 +1382,44 @@ export default function Home({navigation}) {
         </BottomSheetModal>
 
         <BottomSheetModal
-          snapPoints={snapPoints}
+          snapPoints={secondSnapPoints}
           ref={secondBottomSheetModalRef}
           index={0}
           enableContentPanningGesture={false}
           backdropComponent={renderBackdrop}
           onChange={handleSecondSheetChanges}>
           <View style={{width: '100%', height: '100%'}}>
+            <View
+              style={{
+                width: 86,
+                height: 57,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 20,
+                backgroundColor: getCongestionColor(selectedPlace),
+                alignSelf: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 20,
+                  fontWeight: '600',
+                  color: '#fff',
+                }}>
+                {'1,023'}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 10,
+                  fontWeight: '600',
+                  color: '#fff',
+                }}>
+                watching
+              </Text>
+            </View>
             <View
               style={{
                 width: windowWidth,
