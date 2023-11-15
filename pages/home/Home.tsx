@@ -5,6 +5,7 @@ import {
   Dimensions,
   Image,
   Modal,
+  PermissionsAndroid,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -40,11 +41,15 @@ export default function Home({navigation}) {
   const [submit_alert, setPointalert] = useState(false);
   const [submitted, setLocationSumbit] = useState(false);
   const [selected, setSelected] = useState(0);
-  const [position, setPosition] = useState();
+  const [position, setPosition] = useState({
+    coords: {latitude: 36, longitude: 127},
+  });
   const [selectedPlace, setSelectedPlace] = useState(dummyPlace.places[0]);
   const [bookmark, setBookmark] = useState(false);
   const [congestion, setCongestion] = useState(false);
   const [locationinfo, setLocationInfo] = useState(false);
+
+  console.log(position);
 
   const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
@@ -54,6 +59,11 @@ export default function Home({navigation}) {
     try {
       if (Platform.OS === 'ios') {
         return await Geolocation.requestAuthorization('always');
+      }
+      if (Platform.OS === 'android') {
+        return await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
       }
     } catch (e) {
       console.error(e);
@@ -65,6 +75,7 @@ export default function Home({navigation}) {
       if (result === 'granted') {
         Geolocation.getCurrentPosition(
           pos => {
+            console.log(pos);
             setPosition(pos);
           },
           error => {
@@ -132,8 +143,8 @@ export default function Home({navigation}) {
         <Marker
           key={dummyPlace && dummyPlace.places.indexOf(place)}
           coordinate={{
-            latitude: place.latitude,
-            longitude: place.longitude,
+            latitude: parseFloat(place.latitude),
+            longitude: parseFloat(place.longitude),
           }}
           onPress={() => handleSecondModalPress(place)}
           style={{flexDirection: 'column', alignItems: 'center'}}>
@@ -161,8 +172,8 @@ export default function Home({navigation}) {
         <Marker
           key={dummyPlace && dummyPlace.places.indexOf(place)}
           coordinate={{
-            latitude: place.latitude,
-            longitude: place.longitude,
+            latitude: parseFloat(place.latitude),
+            longitude: parseFloat(place.longitude),
           }}
           onPress={() => handleSecondModalPress(place)}
           style={{flexDirection: 'column', alignItems: 'center'}}>
@@ -575,14 +586,24 @@ export default function Home({navigation}) {
             </View>
           </Modal>
 
-          <View style={{flex: 1, backgroundColor: 'lightgreen'}}>
+          <View style={{flex: 1}}>
             <View style={{position: 'absolute', height: '100%', width: '100%'}}>
               <MapView
                 provider={PROVIDER_GOOGLE}
-                style={{height: '100%', width: '100%'}}
+                style={{
+                  height: Dimensions.get('window').height,
+                  width: Dimensions.get('window').width,
+                  flex: 1,
+                }}
                 region={{
-                  latitude: position && position.coords.latitude,
-                  longitude: position && position.coords.longitude,
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  latitudeDelta: 0.015,
+                  longitudeDelta: 0.0121,
+                }}
+                initialRegion={{
+                  latitude: 36.36308,
+                  longitude: 127.3561601,
                   latitudeDelta: 0.015,
                   longitudeDelta: 0.0121,
                 }}
@@ -592,11 +613,13 @@ export default function Home({navigation}) {
                     elementType: 'labels.icon',
                     stylers: [{visibility: 'off'}],
                   },
-                ]}>
+                ]}
+                zoomEnabled={true}>
                 <Marker
                   coordinate={{
-                    latitude: position && position.coords.latitude,
-                    longitude: position && position.coords.longitude,
+                    latitude: position && parseFloat(position.coords.latitude),
+                    longitude:
+                      position && parseFloat(position.coords.longitude),
                   }}
                   onPress={() => Alert.alert('hello')}>
                   <Image
