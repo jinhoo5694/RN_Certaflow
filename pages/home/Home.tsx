@@ -25,6 +25,8 @@ import dummyPlace from '../../components/data/dummyPlace.json';
 import ChatMessage from '../chat/ChatMessage';
 import TipBox from '../tip/TipBox';
 import Low from '../../components/congest/Low';
+import Middle from '../../components/congest/Middle';
+import High from '../../components/congest/High';
 
 export default function Home({navigation}) {
   const [modal, setModal] = useState(true);
@@ -123,37 +125,10 @@ export default function Home({navigation}) {
   );
 
   const placeMarkers =
-      dummyPlace &&
-      dummyPlace.places.map(place => (
-          congestion ? 
-            <Marker
-            key={dummyPlace && dummyPlace.places.indexOf(place)}
-            coordinate={{
-              latitude: place.latitude,
-              longitude: place.longitude,
-            }}
-            onPress={() => handleSecondModalPress(place)}
-            style={{flexDirection: 'column', alignItems: 'center'}}>
-            {place.congestion == 0 ? 
-            <Image
-              source={require('../../public/icons/not_congested.png')}
-              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-            /> : 
-            place.congestion == 1 ? 
-            <Image
-              source={require('../../public/icons/slight_congested.png')}
-              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-            /> :
-            <Image
-              source={require('../../public/icons/very_congested.png')}
-              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-            />
-            }
-            <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
-              {place.name}
-            </Text>
-          </Marker> :
-          <Marker
+    dummyPlace &&
+    dummyPlace.places.map(place =>
+      congestion ? (
+        <Marker
           key={dummyPlace && dummyPlace.places.indexOf(place)}
           coordinate={{
             latitude: place.latitude,
@@ -161,30 +136,75 @@ export default function Home({navigation}) {
           }}
           onPress={() => handleSecondModalPress(place)}
           style={{flexDirection: 'column', alignItems: 'center'}}>
-          {(["까페", "커피전문점"]).includes(place.category) ? 
-          <Image
-            source={require('../../public/icons/marker_cafe.png')}
-            style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-          /> : 
-          (["샤브샤브", "태국음식", "와인바", "한정식", "패밀리레스토랑", " 참치회", "인삼,홍삼"]).includes(place.category) ? 
-          <Image
-            source={require('../../public/icons/marker_restaurant.png')}
-            style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-          /> :
-          <Image
-            source={require('../../public/icons/marker_landmark.png')}
-            style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-          />
-          }
+          {place.congestion == 0 ? (
+            <Image
+              source={require('../../public/icons/not_congested.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            />
+          ) : place.congestion == 1 ? (
+            <Image
+              source={require('../../public/icons/slight_congested.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            />
+          ) : (
+            <Image
+              source={require('../../public/icons/very_congested.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            />
+          )}
           <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
             {place.name}
           </Text>
         </Marker>
-        
-        
-    ));
+      ) : (
+        <Marker
+          key={dummyPlace && dummyPlace.places.indexOf(place)}
+          coordinate={{
+            latitude: place.latitude,
+            longitude: place.longitude,
+          }}
+          onPress={() => handleSecondModalPress(place)}
+          style={{flexDirection: 'column', alignItems: 'center'}}>
+          {['까페', '커피전문점'].includes(place.category) ? (
+            <Image
+              source={require('../../public/icons/marker_cafe.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            />
+          ) : [
+              '샤브샤브',
+              '태국음식',
+              '와인바',
+              '한정식',
+              '패밀리레스토랑',
+              ' 참치회',
+              '인삼,홍삼',
+            ].includes(place.category) ? (
+            <Image
+              source={require('../../public/icons/marker_restaurant.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            />
+          ) : (
+            <Image
+              source={require('../../public/icons/marker_landmark.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            />
+          )}
+          <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
+            {place.name}
+          </Text>
+        </Marker>
+      ),
+    );
 
-  console.log(selectedPlace);
+  function getCongestionCard(place: object) {
+    if (place.congestion == 0) {
+      return <Low />;
+    } else if (place.congestion == 1) {
+      return <Middle />;
+    } else {
+      return <High />;
+    }
+  }
 
   return (
     <SafeAreaView>
@@ -545,7 +565,6 @@ export default function Home({navigation}) {
           </Modal>
 
           <View style={{flex: 1, backgroundColor: 'lightgreen'}}>
-
             <View style={{position: 'absolute', height: '100%', width: '100%'}}>
               <MapView
                 provider={PROVIDER_GOOGLE}
@@ -631,7 +650,7 @@ export default function Home({navigation}) {
               </TouchableOpacity>
             </View>
 
-            <View 
+            <View
               style={{
                 height: 26,
                 width: '100%',
@@ -807,54 +826,62 @@ export default function Home({navigation}) {
                 </TouchableOpacity>
               </ScrollView>
             </View>
-          
+
             <TouchableOpacity
               onPress={() => setLocationInfo(!locationinfo)}
               style={{
-                height: 40, width: 40,
+                height: 40,
+                width: 40,
                 marginTop: 15,
                 marginRight: 15,
                 alignSelf: 'flex-end',
-                justifyContent: 'flex-end'
+                justifyContent: 'flex-end',
               }}>
-              {submitted ? 
-                locationinfo ? 
+              {submitted ? (
+                locationinfo ? (
                   <Image
-                  source={require('../../public/icons/location_black.png')}
-                  style={{height: 40, width: 40, marginRight: 10}}
-                  /> :
+                    source={require('../../public/icons/location_black.png')}
+                    style={{height: 40, width: 40, marginRight: 10}}
+                  />
+                ) : (
                   <Image
                     source={require('../../public/icons/location_white.png')}
                     style={{height: 40, width: 40, marginRight: 10}}
-                  /> 
-               : locationinfo?
-                  <Image
-                      source={require('../../public/icons/no_location_black.png')}
-                      style={{height: 40, width: 40, marginRight: 10}}
-                  /> : 
-                  <Image
-                      source={require('../../public/icons/no_location_white.png')}
-                      style={{height: 40, width: 40, marginRight: 10}}
-                  />}
+                  />
+                )
+              ) : locationinfo ? (
+                <Image
+                  source={require('../../public/icons/no_location_black.png')}
+                  style={{height: 40, width: 40, marginRight: 10}}
+                />
+              ) : (
+                <Image
+                  source={require('../../public/icons/no_location_white.png')}
+                  style={{height: 40, width: 40, marginRight: 10}}
+                />
+              )}
             </TouchableOpacity>
-    
+
             <TouchableOpacity
-                onPress={() => setCongestion(!congestion)}
-                style={{
-                  height: 50, width: 50,
-                  marginTop: windowHeight * 0.56,
-                  marginRight: 10,
-                  alignSelf: 'flex-end'
-                }}>
-                {congestion ? <Image
+              onPress={() => setCongestion(!congestion)}
+              style={{
+                height: 50,
+                width: 50,
+                marginTop: windowHeight * 0.56,
+                marginRight: 10,
+                alignSelf: 'flex-end',
+              }}>
+              {congestion ? (
+                <Image
                   source={require('../../public/icons/congest_button_black.png')}
                   style={{height: 50, width: 50, marginRight: 10}}
-                /> :
+                />
+              ) : (
                 <Image
                   source={require('../../public/icons/congest_button_white.png')}
                   style={{height: 50, width: 50, marginRight: 10}}
                 />
-                }
+              )}
             </TouchableOpacity>
           </View>
 
@@ -1157,7 +1184,7 @@ export default function Home({navigation}) {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-                <View
+              <View
                 style={{
                   height: 200,
                   width: windowWidth * 0.75,
@@ -1166,95 +1193,116 @@ export default function Home({navigation}) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                  <Text style={{
-                        fontFamily: 'Inter',
-                        fontSize: 11,
-                        textAlign: 'center',
-                      }}> Thank you for participating the survey! </Text>
-                  <Text style={{
-                        fontFamily: 'Inter',
-                        fontSize: 11,
-                        textAlign: 'center',
-                      }}> You earned 5 points. 🎉 </Text>
-                  <Text style={{
-                        fontFamily: 'Inter',
-                        fontSize: 11,
-                        textAlign: 'center',
-                        marginTop: 10
-                      }}> Your current points are </Text>
-                  <Text style={{
-                        fontFamily: 'Inter',
-                        fontSize: 11,
-                        textAlign: 'center',
-                      }}> <Text style={{
-                        fontFamily: 'Inter',
-                        fontSize: 17,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                        marginTop: 10
-                      }}> 30 </Text>points.</Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    textAlign: 'center',
+                  }}>
+                  {' '}
+                  Thank you for participating the survey!{' '}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    textAlign: 'center',
+                  }}>
+                  {' '}
+                  You earned 5 points. 🎉{' '}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    textAlign: 'center',
+                    marginTop: 10,
+                  }}>
+                  {' '}
+                  Your current points are{' '}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    textAlign: 'center',
+                  }}>
+                  {' '}
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      fontSize: 17,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      marginTop: 10,
+                    }}>
+                    {' '}
+                    30{' '}
+                  </Text>
+                  points.
+                </Text>
 
-                    <View 
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setPointalert(false);
+                    }}
+                    style={{
+                      height: 32,
+                      width: '35%',
+                      marginRight: 15,
+                      borderRadius: 20,
+                      borderColor: '#000',
+                      borderWidth: 1,
+                      backgroundColor: '#FFF',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
                       style={{
-                        flexDirection: 'row', 
-                        marginTop: 20,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setPointalert(false);
-                        }}
-                        style={{
-                          height: 32,
-                          width: '35%',
-                          marginRight: 15,
-                          borderRadius: 20,
-                          borderColor: '#000',
-                          borderWidth: 1,
-                          backgroundColor: '#FFF',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: 'Inter',
-                            includeFontPadding: false,
-                            fontSize: 14,
-                            fontWeight: '500',
-                            color: '#000',
-                          }}>
-                          Cancel
-                        </Text>
-                      </TouchableOpacity>
+                        fontFamily: 'Inter',
+                        includeFontPadding: false,
+                        fontSize: 14,
+                        fontWeight: '500',
+                        color: '#000',
+                      }}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
 
-                      <TouchableOpacity
-                        onPress={() => {
-                          setPointalert(false);
-                        }}
-                        style={{
-                          height: 32,
-                          width: '35%',
-                          marginRight: 15,
-                          borderRadius: 20,
-                          borderWidth: 1,
-                          backgroundColor: '#000',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: 'Inter',
-                            includeFontPadding: false,
-                            fontSize: 14,
-                            fontWeight: '500',
-                            color: '#fff',
-                          }}>
-                          Confirm
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setPointalert(false);
+                    }}
+                    style={{
+                      height: 32,
+                      width: '35%',
+                      marginRight: 15,
+                      borderRadius: 20,
+                      borderWidth: 1,
+                      backgroundColor: '#000',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontFamily: 'Inter',
+                        includeFontPadding: false,
+                        fontSize: 14,
+                        fontWeight: '500',
+                        color: '#fff',
+                      }}>
+                      Confirm
+                    </Text>
+                  </TouchableOpacity>
                 </View>
+              </View>
             </View>
           </Modal>
 
@@ -1321,7 +1369,7 @@ export default function Home({navigation}) {
             </ScrollView>
           </View>
         </BottomSheetModal>
-        
+
         <BottomSheetModal
           snapPoints={snapPoints}
           ref={secondBottomSheetModalRef}
@@ -1413,7 +1461,7 @@ export default function Home({navigation}) {
                     {' / 5.0'}
                   </Text>
                 </View>
-                {<Low />}
+                {getCongestionCard(selectedPlace)}
               </View>
               <TouchableOpacity onPress={() => setBookmark(!bookmark)}>
                 <Image
@@ -1674,7 +1722,6 @@ export default function Home({navigation}) {
             </ScrollView>
           </View>
         </BottomSheetModal>
-        
       </BottomSheetModalProvider>
     </SafeAreaView>
   );
