@@ -88,76 +88,96 @@ export default function Mypage({navigation}) {
             </Text>
             <View
               style={{
-                flex: 1,
+                height: 50,
                 width: Dimensions.get('window').width * 0.522,
                 marginTop: 21,
                 alignSelf: 'center',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={require('../../public/icons/star_color.png')}
+                style={{
+                  height: 25,
+                  width: 25,
+                  marginHorizontal: 2.5,
+                }}
+              />
+              <Image
+                source={require('../../public/icons/star_color.png')}
+                style={{
+                  height: 25,
+                  width: 25,
+                  marginHorizontal: 2.5,
+                }}
+              />
+              <Image
+                source={require('../../public/icons/star_color.png')}
+                style={{
+                  height: 25,
+                  width: 25,
+                  marginHorizontal: 2.5,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginVertical: 3,
               }}>
               <Text
                 style={{
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  textAlign: 'center',
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 20,
+                  fontWeight: '700',
+                  color: '#000',
+                  marginRight: 13,
+                }}>
+                {235}
+              </Text>
+              <Text
+                style={{
                   fontFamily: 'Inter',
                   includeFontPadding: false,
                   fontSize: 15,
                   fontWeight: '500',
                   color: '#000',
                 }}>
-                Lorem ipsum dolor sit amet consectetur. Et nibh volutpat blandit
-                in nibh lacus proin hendrerit et.
+                points
               </Text>
             </View>
             <View
               style={{
-                marginTop: 24,
+                flexDirection: 'row',
                 alignItems: 'center',
-                alignSelf: 'center',
-                width: '100%',
-                marginBottom: 34,
+                justifyContent: 'center',
+                marginVertical: 3,
               }}>
               <Text
                 style={{
                   fontFamily: 'Inter',
                   includeFontPadding: false,
+                  fontSize: 20,
+                  fontWeight: '700',
+                  color: '#000',
+                  marginRight: 13,
+                }}>
+                {18}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
                   fontSize: 15,
-                  fontWeight: '300',
+                  fontWeight: '500',
                   color: '#000',
                 }}>
-                Contribution Level
+                likes
               </Text>
-              <View
-                style={{
-                  width: '100%',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  source={require('../../public/icons/star.png')}
-                  style={{
-                    height: 31,
-                    width: 31,
-                    resizeMode: 'contain',
-                  }}
-                />
-                <Image
-                  source={require('../../public/icons/star.png')}
-                  style={{
-                    height: 31,
-                    width: 31,
-                    resizeMode: 'contain',
-                  }}
-                />
-                <Image
-                  source={require('../../public/icons/star.png')}
-                  style={{
-                    height: 31,
-                    width: 31,
-                    resizeMode: 'contain',
-                  }}
-                />
-              </View>
             </View>
           </View>
         </View>
