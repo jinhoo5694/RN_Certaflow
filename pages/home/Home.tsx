@@ -123,35 +123,65 @@ export default function Home({navigation}) {
   );
 
   const placeMarkers =
-    dummyPlace &&
-    dummyPlace.places.map(place => (
-      <Marker
-        key={dummyPlace && dummyPlace.places.indexOf(place)}
-        coordinate={{
-          latitude: place.latitude,
-          longitude: place.longitude,
-        }}
-        onPress={() => handleSecondModalPress(place)}
-        style={{flexDirection: 'column', alignItems: 'center'}}>
-        {place.congestion == 0 ? 
-        <Image
-          source={require('../../public/icons/not_congested.png')}
-          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-        /> : 
-        place.congestion == 1 ? 
-        <Image
-          source={require('../../public/icons/slight_congested.png')}
-          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-        /> :
-        <Image
-          source={require('../../public/icons/very_congested.png')}
-          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-        />
-        }
-        <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
-          {place.name}
-        </Text>
-      </Marker>
+      dummyPlace &&
+      dummyPlace.places.map(place => (
+          congestion ? 
+            <Marker
+            key={dummyPlace && dummyPlace.places.indexOf(place)}
+            coordinate={{
+              latitude: place.latitude,
+              longitude: place.longitude,
+            }}
+            onPress={() => handleSecondModalPress(place)}
+            style={{flexDirection: 'column', alignItems: 'center'}}>
+            {place.congestion == 0 ? 
+            <Image
+              source={require('../../public/icons/not_congested.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            /> : 
+            place.congestion == 1 ? 
+            <Image
+              source={require('../../public/icons/slight_congested.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            /> :
+            <Image
+              source={require('../../public/icons/very_congested.png')}
+              style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+            />
+            }
+            <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
+              {place.name}
+            </Text>
+          </Marker> :
+          <Marker
+          key={dummyPlace && dummyPlace.places.indexOf(place)}
+          coordinate={{
+            latitude: place.latitude,
+            longitude: place.longitude,
+          }}
+          onPress={() => handleSecondModalPress(place)}
+          style={{flexDirection: 'column', alignItems: 'center'}}>
+          {(["까페", "커피전문점"]).includes(place.category) ? 
+          <Image
+            source={require('../../public/icons/marker_cafe.png')}
+            style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+          /> : 
+          (["샤브샤브", "태국음식", "와인바", "한정식", "패밀리레스토랑", " 참치회", "인삼,홍삼"]).includes(place.category) ? 
+          <Image
+            source={require('../../public/icons/marker_restaurant.png')}
+            style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+          /> :
+          <Image
+            source={require('../../public/icons/marker_landmark.png')}
+            style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+          />
+          }
+          <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
+            {place.name}
+          </Text>
+        </Marker>
+        
+        
     ));
 
   console.log(selectedPlace);
