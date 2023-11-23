@@ -12,6 +12,9 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Main from './pages/Main';
 import {NavigationContainer} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {enableLatestRenderer} from 'react-native-maps';
+
+enableLatestRenderer();
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';

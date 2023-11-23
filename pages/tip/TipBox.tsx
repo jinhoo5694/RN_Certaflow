@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {Dimensions, Image, Text, View} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function TipBox(props: any) {
   const windowWidth = Dimensions.get('window').width;
@@ -9,7 +16,21 @@ export default function TipBox(props: any) {
   const likes = props.likes;
   const dislikes = props.dislikes;
   return (
-    <View
+    <TouchableOpacity
+      onPress={() =>
+        Alert.alert('Recommend', 'Like this tip?', [
+          {
+            text: 'Like',
+            onPress: () => Alert.alert('Liked'),
+            style: 'default',
+          },
+          {
+            text: 'Cancel',
+            onPress: () => {},
+            style: 'destructive',
+          },
+        ])
+      }
       style={{
         width: windowWidth * 0.898,
         height: 94,
@@ -117,6 +138,6 @@ export default function TipBox(props: any) {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }

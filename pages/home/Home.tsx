@@ -9,6 +9,7 @@ import {
   Platform,
   SafeAreaView,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -227,6 +228,25 @@ export default function Home({navigation}) {
       return '#c80000';
     }
   }
+
+  const styles = StyleSheet.create({
+    container: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    map: {
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      position: 'absolute',
+    },
+  });
 
   return (
     <SafeAreaView>
@@ -587,14 +607,10 @@ export default function Home({navigation}) {
           </Modal>
 
           <View style={{flex: 1}}>
-            <View style={{position: 'absolute', height: '100%', width: '100%'}}>
+            <View style={styles.container}>
               <MapView
                 provider={PROVIDER_GOOGLE}
-                style={{
-                  height: Dimensions.get('window').height,
-                  width: Dimensions.get('window').width,
-                  flex: 1,
-                }}
+                style={styles.map}
                 region={{
                   latitude: position.coords.latitude,
                   longitude: position.coords.longitude,
