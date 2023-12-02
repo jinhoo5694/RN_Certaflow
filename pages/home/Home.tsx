@@ -666,6 +666,7 @@ export default function Home({navigation}) {
                   },
                 ]}>
                 <Marker
+                  tracksViewChanges={false}
                   coordinate={{
                     latitude: position && parseFloat(position.coords.latitude),
                     longitude:
