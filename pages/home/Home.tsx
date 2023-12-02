@@ -155,7 +155,7 @@ export default function Home({navigation}) {
 
   const placeCategoryMarkers =
     places &&
-    places.map((place, index) => (
+    filterPlaces(category).map((place, index) => (
       <Marker
         tracksViewChanges={false}
         key={`categoryMarker_${index}_${congestion ? 'congestion' : 'normal'}`}
@@ -181,7 +181,7 @@ export default function Home({navigation}) {
 
   const placeCongestionMarkers =
     places &&
-    places.map((place, index) => (
+    filterPlaces(category).map((place, index) => (
       <Marker
         tracksViewChanges={false}
         key={`congestionMarker_${index}_${
@@ -220,6 +220,47 @@ export default function Home({navigation}) {
       return '#ecaa00';
     } else {
       return '#c80000';
+    }
+  }
+
+  function getCategoryName(id: string) {
+    if (id === 'restaurant-cat-id') {
+      return 'Restaurant';
+    } else if (id === 'cafe-cat-id') {
+      return 'Cafe';
+    } else if (id === 'shopping-cat-id') {
+      return 'Shopping';
+    } else if (id === 'landmark-cat-id') {
+      return 'Landmark';
+    } else {
+      return 'Museum';
+    }
+  }
+
+  function filterPlaces(index: number) {
+    let filteredPlaceList = places;
+    if (index == 0) {
+      return filteredPlaceList.filter(
+        item => item.locationLocationCategoryId == 'restaurant-cat-id',
+      );
+    } else if (index == 1) {
+      return filteredPlaceList.filter(
+        item => item.locationLocationCategoryId == 'cafe-cat-id',
+      );
+    } else if (index == 2) {
+      return filteredPlaceList.filter(
+        item => item.locationLocationCategoryId == 'shopping-cat-id',
+      );
+    } else if (index == 3) {
+      return filteredPlaceList.filter(
+        item => item.locationLocationCategoryId == 'landmark-cat-id',
+      );
+    } else if (index == 4) {
+      return filteredPlaceList.filter(
+        item => item.locationLocationCategoryId == 'museum-cat-id',
+      );
+    } else {
+      return filteredPlaceList;
     }
   }
 
@@ -1502,7 +1543,7 @@ export default function Home({navigation}) {
                     color: '#bbb4b5',
                     marginBottom: 5,
                   }}>
-                  {selectedPlace.locationLocationCategoryId}
+                  {getCategoryName(selectedPlace.locationLocationCategoryId)}
                 </Text>
                 <Text
                   style={{
