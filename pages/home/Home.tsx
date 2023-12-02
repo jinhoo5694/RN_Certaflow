@@ -673,8 +673,8 @@ export default function Home({navigation}) {
                   }}
                   onPress={() => Alert.alert('hello')}>
                   <Image
-                    source={require('../../public/images/cat.png')}
-                    style={{height: 80, width: 80, resizeMode: 'contain'}}
+                    source={require('../../public/icons/mylocation.png')}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
                   />
                 </Marker>
                 {congestion ? placeCongestionMarkers : placeCategoryMarkers}
