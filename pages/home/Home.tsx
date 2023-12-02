@@ -50,8 +50,6 @@ export default function Home({navigation}) {
   const [congestion, setCongestion] = useState(false);
   const [locationinfo, setLocationInfo] = useState(false);
 
-  console.log(position);
-
   const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
@@ -76,7 +74,6 @@ export default function Home({navigation}) {
       if (result === 'granted') {
         Geolocation.getCurrentPosition(
           pos => {
-            console.log(pos);
             setPosition(pos);
           },
           error => {
@@ -629,8 +626,7 @@ export default function Home({navigation}) {
                     elementType: 'labels.icon',
                     stylers: [{visibility: 'off'}],
                   },
-                ]}
-                zoomEnabled={true}>
+                ]}>
                 <Marker
                   coordinate={{
                     latitude: position && parseFloat(position.coords.latitude),

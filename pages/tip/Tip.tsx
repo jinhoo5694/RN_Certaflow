@@ -5,12 +5,13 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  ScrollView
 } from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 export default function Tip({navigation}) {
   const [input, setInput] = useState('');
@@ -19,6 +20,11 @@ export default function Tip({navigation}) {
     Alert.alert('finished');
     navigation.goBack();
   }
+
+  const options = {
+    maxWidth: 300,
+    maxHeight: 500,
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -58,102 +64,115 @@ export default function Tip({navigation}) {
         <View style={{width: 45}} />
       </View>
       <ScrollView
-          style={{width: '100%', height: '100%'}}
-          showsVerticalScrollIndicator={false}>
-      <Image
-        source={require('../../public/images/tip.png')}
-        style={{
-          width: Dimensions.get('window').width,
-          height: Dimensions.get('window').width * 0.412,
-          resizeMode: 'contain',
-          backgroundColor: 'red',
-        }}
-      />
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: '#fff',
-          alignItems: 'center',
-          paddingVertical: 26,
-        }}>
-        <TouchableOpacity>
-          <Image
-            source={require('../../public/icons/addCircle.png')}
-            style={{
-              height: 60,
-              width: 60,
-            }}
-          />
-        </TouchableOpacity>
-        <Text
+        style={{width: '100%', height: '100%'}}
+        showsVerticalScrollIndicator={false}>
+        <Image
+          source={require('../../public/images/tip.png')}
           style={{
-            textAlign: 'center',
-            marginTop: 10,
-            fontFamily: 'Inter',
-            includeFontPadding: false,
-            fontSize: 12,
-            fontWeight: '300',
-            color: '#000',
-          }}>
-          Add images
-        </Text>
-        <Text
-          style={{
-            textAlign: 'center',
-            fontFamily: 'Inter',
-            includeFontPadding: false,
-            fontSize: 12,
-            fontWeight: '300',
-            color: '#000',
-          }}>
-          0/10
-        </Text>
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').width * 0.412,
+            resizeMode: 'contain',
+            backgroundColor: 'red',
+          }}
+        />
         <View
           style={{
-            width: Dimensions.get('window').width * 0.898,
-            height: 224,
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: '#c6c6c6',
-            marginTop: 32,
-            padding: 25,
+            flex: 1,
+            backgroundColor: '#fff',
+            alignItems: 'center',
+            paddingVertical: 26,
           }}>
-          <TextInput
+          <TouchableOpacity
+            onPress={() =>
+              launchImageLibrary(options, response => {
+                if (response.didCancel) {
+                  Alert.alert('Cancel', 'User has canceled');
+                } else if (response.error) {
+                  Alert.alert('Error', 'Error occurred');
+                } else {
+                  console.log(response);
+                }
+              })
+            }>
+            <Image
+              source={require('../../public/icons/addCircle.png')}
+              style={{
+                height: 60,
+                width: 60,
+              }}
+            />
+          </TouchableOpacity>
+          <Text
             style={{
-              width: '100%',
-              height: 150,
-            }}
-            value={input}
-            onChangeText={setInput}
-          />
-          <Text style={{textAlign: 'right'}}>
-            {input.length.toString() + '/2000'}
+              textAlign: 'center',
+              marginTop: 10,
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 12,
+              fontWeight: '300',
+              color: '#000',
+            }}>
+            Add images
           </Text>
-        </View>
-        <TouchableOpacity disabled={input.length < 1} onPress={() => sendTip()}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 12,
+              fontWeight: '300',
+              color: '#000',
+            }}>
+            0/10
+          </Text>
           <View
             style={{
-              height: 49,
-              width: 200,
-              borderRadius: 50,
-              backgroundColor: input.length ? '#000' : '#cacaca',
-              marginTop: 26,
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: Dimensions.get('window').width * 0.898,
+              height: 224,
+              borderRadius: 10,
+              borderWidth: 1,
+              borderColor: '#c6c6c6',
+              marginTop: 32,
+              padding: 25,
             }}>
-            <Text
+            <TextInput
               style={{
-                fontFamily: 'Inter',
-                includeFontPadding: false,
-                fontSize: 17,
-                fontWeight: '600',
-                color: '#fff',
-              }}>
-              Register
+                width: '100%',
+                height: 150,
+              }}
+              value={input}
+              onChangeText={setInput}
+            />
+            <Text style={{textAlign: 'right'}}>
+              {input.length.toString() + '/2000'}
             </Text>
           </View>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            disabled={input.length < 1}
+            onPress={() => sendTip()}>
+            <View
+              style={{
+                height: 49,
+                width: 200,
+                borderRadius: 50,
+                backgroundColor: input.length ? '#000' : '#cacaca',
+                marginTop: 26,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  includeFontPadding: false,
+                  fontSize: 17,
+                  fontWeight: '600',
+                  color: '#fff',
+                }}>
+                Register
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
