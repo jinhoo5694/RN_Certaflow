@@ -157,7 +157,7 @@ export default function Home({navigation}) {
     places &&
     filterPlaces(category).map((place, index) => (
       <Marker
-        tracksViewChanges={false}
+        tracksViewChanges={Platform.OS === 'ios'}
         key={`categoryMarker_${index}_${congestion ? 'congestion' : 'normal'}`}
         coordinate={{
           latitude: parseFloat(place.locationLatitude),
@@ -183,7 +183,7 @@ export default function Home({navigation}) {
     places &&
     filterPlaces(category).map((place, index) => (
       <Marker
-        tracksViewChanges={false}
+        tracksViewChanges={Platform.OS === 'ios'}
         key={`congestionMarker_${index}_${
           congestion ? 'congestion' : 'normal'
         }`}
