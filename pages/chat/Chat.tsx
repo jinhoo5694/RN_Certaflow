@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   Modal,
@@ -22,6 +23,10 @@ export default function Chat({navigation, route}) {
   const [myChat, setMyChat] = useState([]);
 
   function sendChat() {
+    if (input.length == 0) {
+      Alert.alert('Error', 'Please enter content');
+      return;
+    }
     const chatMessage = (
       <MyChatMessage
         key={new Date()}
@@ -55,7 +60,7 @@ export default function Chat({navigation, route}) {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: `rgba(0, 0, 0, 0.5)`,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
           }}>
           <View
             style={{

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
 
 export default function ChatMessage(props: any) {
   const name = props.name;
@@ -26,7 +26,8 @@ export default function ChatMessage(props: any) {
           }}>
           {name}
         </Text>
-        <View
+        <TouchableOpacity
+          onPress={() => Alert.alert('Like this comment?')}
           style={{
             backgroundColor: '#d9d9d9',
             borderRadius: 40,
@@ -36,7 +37,7 @@ export default function ChatMessage(props: any) {
             marginTop: 4,
           }}>
           <Text>{content}</Text>
-        </View>
+        </TouchableOpacity>
         <View
           style={{
             flexDirection: 'row',
