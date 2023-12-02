@@ -3,6 +3,7 @@ import {Dimensions, Image, Text, TouchableOpacity, View} from 'react-native';
 
 export default function Saved(props: any) {
   const windowWidth = Dimensions.get('window').width;
+  const navigation = props.navigation;
 
   return (
     <View
@@ -72,6 +73,7 @@ export default function Saved(props: any) {
           justifyContent: 'center',
         }}>
         <TouchableOpacity
+          onPress={() => navigation.navigate('Place')}
           style={{
             marginHorizontal: 7.5,
           }}>

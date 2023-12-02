@@ -13,7 +13,6 @@ export default function Low(props: any) {
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 12,
-        paddingVertical: 5,
       }}>
       <Text
         style={{

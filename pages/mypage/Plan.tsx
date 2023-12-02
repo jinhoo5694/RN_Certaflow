@@ -3,6 +3,7 @@ import {Dimensions, Image, Text, TouchableOpacity, View} from 'react-native';
 
 export default function Plan(props: any) {
   const windowWidth = Dimensions.get('window').width;
+  const navigation = props.navigation;
 
   return (
     <View

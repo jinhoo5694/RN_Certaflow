@@ -220,8 +220,8 @@ export default function Mypage({navigation}) {
           <Text>Contribution Level</Text>
         </View>
       </View>
-      <Plan />
-      <Saved />
+      <Plan navigation={navigation} />
+      <Saved navigation={navigation} />
     </SafeAreaView>
   );
 }

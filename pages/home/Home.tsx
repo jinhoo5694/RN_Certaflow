@@ -29,14 +29,16 @@ import TipBox from '../tip/TipBox';
 import Low from '../../components/congest/Low';
 import Middle from '../../components/congest/Middle';
 import High from '../../components/congest/High';
+import axios from 'axios';
 
 export default function Home({navigation}) {
-  const [modal, setModal] = useState(true);
   const [input, setInput] = useState('');
   const [category, setCategory] = useState(-1);
   const [tutorial, setTutorial] = useState(true);
   const [next, setNext] = useState(false);
   const [location, setLocation] = useState(false);
+  // This place will be used to identify where the user is at right now.
+  // Therefore, it is essential to update this property with currently-closest place
   const [place, setPlace] = useState('Woody Room');
   const [surveyed, setSurveyed] = useState(false);
   const [submit_alert, setPointalert] = useState(false);
@@ -45,14 +47,20 @@ export default function Home({navigation}) {
   const [position, setPosition] = useState({
     coords: {latitude: 36, longitude: 127},
   });
+  const [places, setPlaces] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState(dummyPlace.places[0]);
   const [bookmark, setBookmark] = useState(false);
   const [congestion, setCongestion] = useState(false);
   const [locationinfo, setLocationInfo] = useState(false);
-
-  const categoryList = ['Restaurant', 'Cafe', 'Shopping', 'Landmark', 'Museum'];
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
+
+  useEffect(() => {
+    axios
+      .get('http://121.184.96.94:8070/api/v1/location')
+      .then(response => setPlaces(response.data.locationList))
+      .catch(error => console.error(error));
+  }, []);
 
   async function requestPermission() {
     try {
@@ -122,24 +130,13 @@ export default function Home({navigation}) {
     ),
     [],
   );
-  const secondRenderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        pressBehavior={'close'}
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-      />
-    ),
-    [],
-  );
 
   function getPlaceMarker(category: string) {
-    if (category === '식당') {
+    if (category === 'restaurant-cat-id') {
       return require('../../public/icons/marker_restaurant.png');
-    } else if (category === '카페') {
+    } else if (category === 'cafe-cat-id') {
       return require('../../public/icons/marker_cafe.png');
-    } else if (category === '쇼핑') {
+    } else if (category === 'shopping-cat-id') {
       return require('../../public/icons/marker_shopping.png');
     } else {
       return require('../../public/icons/marker_landmark.png');
@@ -156,54 +153,60 @@ export default function Home({navigation}) {
     }
   }
 
-  const placeMarkers =
-    dummyPlace &&
-    dummyPlace.places.map(place =>
-      congestion ? (
-        <Marker
-          key={dummyPlace && dummyPlace.places.indexOf(place)}
-          coordinate={{
-            latitude: parseFloat(place.latitude),
-            longitude: parseFloat(place.longitude),
+  const placeCategoryMarkers =
+    places &&
+    places.map((place, index) => (
+      <Marker
+        tracksViewChanges={false}
+        key={`categoryMarker_${index}_${congestion ? 'congestion' : 'normal'}`}
+        coordinate={{
+          latitude: parseFloat(place.locationLatitude),
+          longitude: parseFloat(place.locationLongitude),
+        }}
+        onPress={() => handleSecondModalPress(place)}
+        style={{flexDirection: 'column', alignItems: 'center'}}>
+        <Image
+          source={getPlaceMarker(place.locationLocationCategoryId)}
+          style={{
+            height: 46,
+            width: 39.48,
+            resizeMode: 'contain',
           }}
-          onPress={() => handleSecondModalPress(place)}
-          style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Image
-            source={getPlaceCongestionMarker(place.congestion)}
-            style={{height: 46, width: 39.48, resizeMode: 'contain'}}
-          />
-          <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
-            {place.name}
-          </Text>
-        </Marker>
-      ) : (
-        <Marker
-          key={dummyPlace && dummyPlace.places.indexOf(place)}
-          coordinate={{
-            latitude: parseFloat(place.latitude),
-            longitude: parseFloat(place.longitude),
-          }}
-          onPress={() => handleSecondModalPress(place)}
-          style={{flexDirection: 'column', alignItems: 'center'}}>
-          <Image
-            source={getPlaceMarker(place.category)}
-            style={{
-              height: 46,
-              width: 39.48,
-              resizeMode: 'contain',
-            }}
-          />
-          <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
-            {place.name}
-          </Text>
-        </Marker>
-      ),
-    );
+        />
+        <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
+          {place.locationName}
+        </Text>
+      </Marker>
+    ));
+
+  const placeCongestionMarkers =
+    places &&
+    places.map((place, index) => (
+      <Marker
+        tracksViewChanges={false}
+        key={`congestionMarker_${index}_${
+          congestion ? 'congestion' : 'normal'
+        }`}
+        coordinate={{
+          latitude: parseFloat(place.locationLatitude),
+          longitude: parseFloat(place.locationLongitude),
+        }}
+        onPress={() => handleSecondModalPress(place)}
+        style={{flexDirection: 'column', alignItems: 'center'}}>
+        <Image
+          source={getPlaceCongestionMarker(place.locationCongestionLevel)}
+          style={{height: 46, width: 39.48, resizeMode: 'contain'}}
+        />
+        <Text style={{fontSize: 11, marginTop: 5, textAlign: 'center'}}>
+          {place.locationName}
+        </Text>
+      </Marker>
+    ));
 
   function getCongestionCard(place: object) {
-    if (place.congestion == 0) {
+    if (place.locationCongestionLevel == 0) {
       return <Low />;
-    } else if (place.congestion == 1) {
+    } else if (place.locationCongestionLevel == 1) {
       return <Middle />;
     } else {
       return <High />;
@@ -211,9 +214,9 @@ export default function Home({navigation}) {
   }
 
   function getCongestionColor(place: object) {
-    if (place.congestion == 0) {
+    if (place.locationCongestionLevel == 0) {
       return '#00990f';
-    } else if (place.congestion == 1) {
+    } else if (place.locationCongestionLevel == 1) {
       return '#ecaa00';
     } else {
       return '#c80000';
@@ -633,7 +636,7 @@ export default function Home({navigation}) {
                     style={{height: 80, width: 80, resizeMode: 'contain'}}
                   />
                 </Marker>
-                {placeMarkers}
+                {congestion ? placeCongestionMarkers : placeCategoryMarkers}
               </MapView>
             </View>
 
@@ -672,6 +675,8 @@ export default function Home({navigation}) {
                     height: '100%',
                     flex: 1,
                     marginRight: 20,
+                    includeFontPadding: false,
+                    justifyContent: 'center',
                   }}
                   placeholder={'Search here'}
                   value={input}
@@ -711,7 +716,6 @@ export default function Home({navigation}) {
                   style={{
                     height: '100%',
                     paddingHorizontal: 8,
-                    paddingVertical: 5,
                     backgroundColor: '#fff',
                     borderRadius: 20,
                     borderColor: category == 0 ? '#000' : 'rgba(0, 0, 0, 0.29)',
@@ -743,7 +747,6 @@ export default function Home({navigation}) {
                   style={{
                     height: '100%',
                     paddingHorizontal: 8,
-                    paddingVertical: 5,
                     backgroundColor: '#fff',
                     borderRadius: 20,
                     borderColor: category == 1 ? '#000' : 'rgba(0, 0, 0, 0.29)',
@@ -775,7 +778,6 @@ export default function Home({navigation}) {
                   style={{
                     height: '100%',
                     paddingHorizontal: 8,
-                    paddingVertical: 5,
                     backgroundColor: '#fff',
                     borderRadius: 20,
                     borderColor: category == 2 ? '#000' : 'rgba(0, 0, 0, 0.29)',
@@ -807,7 +809,6 @@ export default function Home({navigation}) {
                   style={{
                     height: '100%',
                     paddingHorizontal: 8,
-                    paddingVertical: 5,
                     backgroundColor: '#fff',
                     borderRadius: 20,
                     borderColor: category == 3 ? '#000' : 'rgba(0, 0, 0, 0.29)',
@@ -839,7 +840,6 @@ export default function Home({navigation}) {
                   style={{
                     height: '100%',
                     paddingHorizontal: 8,
-                    paddingVertical: 5,
                     backgroundColor: '#fff',
                     borderRadius: 20,
                     borderColor: category == 4 ? '#000' : 'rgba(0, 0, 0, 0.29)',
@@ -903,7 +903,9 @@ export default function Home({navigation}) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => setCongestion(!congestion)}
+              onPress={() => {
+                setCongestion(!congestion);
+              }}
               style={{
                 height: 50,
                 width: 50,
@@ -1403,9 +1405,27 @@ export default function Home({navigation}) {
               // contentContainerStyle={{height: '100%'}}
               // style={{height: '100%'}}>
             >
-              <EventCard />
-              <EventCard />
-              <EventCard />
+              <EventCard
+                title={'AAICON2023'}
+                date={'12/7 - 12/8'}
+                location={'대전컨벤션센터 1전시장 1F 중회의장'}
+                description={'제3차 실용인공지능학회 학술대회입니다.'}
+                image={'event1'}
+              />
+              <EventCard
+                title={'2023 대전 오픈워십'}
+                date={'12/09 18:30 ~ 20:30'}
+                location={'대전 대덕구 홍도로 97 대전중앙침례교회'}
+                description={'무료 오픈워십'}
+                image={'event2'}
+              />
+              <EventCard
+                title={'2023 JGAK 주니어골프시리즈 10차'}
+                date={'12/11 00:00 ~ 23:00'}
+                location={'충남 부여군 은산면 충절로 백제컨트리클럽'}
+                description={'대전주니어골프대회'}
+                image={'event3'}
+              />
             </ScrollView>
           </View>
         </BottomSheetModal>
@@ -1436,7 +1456,7 @@ export default function Home({navigation}) {
                   fontWeight: '600',
                   color: '#fff',
                 }}>
-                {'1,023'}
+                {selectedPlace.currentViewsCount + 1}
               </Text>
               <Text
                 style={{
@@ -1482,7 +1502,7 @@ export default function Home({navigation}) {
                     color: '#bbb4b5',
                     marginBottom: 5,
                   }}>
-                  {selectedPlace.category}
+                  {selectedPlace.locationLocationCategoryId}
                 </Text>
                 <Text
                   style={{
@@ -1492,7 +1512,7 @@ export default function Home({navigation}) {
                     fontWeight: '600',
                     color: '#000',
                   }}>
-                  {selectedPlace.name}
+                  {selectedPlace.locationName}
                 </Text>
                 <View
                   style={{
@@ -1578,7 +1598,7 @@ export default function Home({navigation}) {
                       fontWeight: '300',
                       color: '#000',
                     }}>
-                    {selectedPlace.address}
+                    {selectedPlace.locationAddress}
                   </Text>
                 </View>
                 <View
@@ -1604,7 +1624,7 @@ export default function Home({navigation}) {
                       fontWeight: '300',
                       color: '#000',
                     }}>
-                    {selectedPlace.openhour}
+                    {selectedPlace.openHour}
                   </Text>
                 </View>
                 <View
@@ -1630,7 +1650,7 @@ export default function Home({navigation}) {
                       fontWeight: '300',
                       color: '#000',
                     }}>
-                    {selectedPlace['phone number']}
+                    {selectedPlace.phoneNumber}
                   </Text>
                 </View>
                 <View

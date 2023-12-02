@@ -2,11 +2,29 @@ import * as React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 
 export default function EventCard(props: any) {
+  const title = props.title;
+  const date = props.date;
+  const location = props.location;
+  const description = props.description;
+  const image = props.image;
+
+  function getImage() {
+    if (image == 'event1') {
+      return require('../../public/images/event1.png');
+    } else if (image == 'event2') {
+      return require('../../public/images/event2.png');
+    } else if (image == 'event3') {
+      return require('../../public/images/event3.png');
+    } else {
+      return require('../../public/images/bopuri1.png');
+    }
+  }
+
   return (
     <View style={{width: '100%', marginBottom: 10}}>
       <TouchableOpacity style={{width: '100%'}}>
         <Image
-          source={require('../../public/images/bopuri1.png')}
+          source={getImage()}
           style={{
             height: 177,
             aspectRatio: 1,
@@ -23,7 +41,7 @@ export default function EventCard(props: any) {
             fontWeight: '600',
             color: '#000',
           }}>
-          Cute Bopuri
+          {title}
         </Text>
         <View
           style={{
@@ -48,7 +66,7 @@ export default function EventCard(props: any) {
               fontWeight: '300',
               color: '#000',
             }}>
-            09/14 - 09/21
+            {date}
           </Text>
         </View>
         <View
@@ -74,7 +92,7 @@ export default function EventCard(props: any) {
               fontWeight: '300',
               color: '#000',
             }}>
-            Daejeon Convention Center
+            {location}
           </Text>
         </View>
         <View
@@ -91,8 +109,7 @@ export default function EventCard(props: any) {
               fontWeight: '400',
               color: '#aaa',
             }}>
-            Lorem ipsum dolor sit amet consectetur. {'\n'}Scelerisque feugiat
-            habitasse curabitur felis. Odi...
+            {description}
           </Text>
         </View>
       </TouchableOpacity>
