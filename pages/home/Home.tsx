@@ -265,7 +265,7 @@ export default function Home({navigation}) {
     }
   }
 
-  function findClosestPlace() {
+  const closestPlace = () => {
     let closestPlace = null;
     let closestDistance = Infinity;
 
@@ -283,18 +283,11 @@ export default function Home({navigation}) {
       if (closestPlace == null) {
         return '';
       } else {
-        return closestPlace.locationName;
+        return closestPlace;
       }
     }
     return '';
-  }
-
-  useEffect(() => {
-    if (places && position) {
-      const closest = findClosestPlace();
-      setPlace(closest);
-    }
-  }, []);
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -1041,7 +1034,8 @@ export default function Home({navigation}) {
                       fontWeight: '500',
                       fontSize: 13,
                     }}>
-                    Are you currently at {findClosestPlace()}?{' '}
+                    Are you currently at{' '}
+                    {closestPlace() !== '' ? closestPlace().locationName : ''}?{' '}
                   </Text>
                   <Text>How congested is it?</Text>
                 </View>
@@ -1825,7 +1819,10 @@ export default function Home({navigation}) {
                   </View>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate('Chat', {place: selectedPlace})
+                      navigation.navigate('Chat', {
+                        place: selectedPlace,
+                        position: position,
+                      })
                     }
                     style={{
                       width: '100%',

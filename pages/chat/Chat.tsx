@@ -17,6 +17,7 @@ import MyChatMessage from './MyChatMessage';
 
 export default function Chat({navigation, route}) {
   const place = route.params.place;
+  const position = route.params.position;
   const [confirm, setConfirm] = useState(false);
   const [modal, setModal] = useState(false);
   const [input, setInput] = useState('');
@@ -37,6 +38,44 @@ export default function Chat({navigation, route}) {
     );
     setMyChat(prevState => [...prevState, chatMessage]);
     setInput('');
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  function onConfirm() {
+    const placeLatitude = place.locationLatitude;
+    const placeLongitude = place.locationLongitude;
+    const currLatitude = position.coords.latitude;
+    const currLongitude = position.coords.longitude;
+
+    const R = 6371;
+    const dLat = deg2rad(placeLatitude - currLatitude);
+    const dLon = deg2rad(placeLongitude - currLongitude);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(placeLatitude)) *
+        Math.cos(deg2rad(currLatitude)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c * 1000; // 거리 (단위: 미터)
+
+    return distance < 50;
+  }
+
+  function onJoin() {
+    const closeEnough = onConfirm();
+    if (closeEnough) {
+      setModal(false);
+      setConfirm(true);
+    } else {
+      Alert.alert('you are not in that place!');
+      setModal(false);
+    }
   }
 
   return (
@@ -125,8 +164,7 @@ export default function Chat({navigation, route}) {
                 <TouchableOpacity
                   style={{marginHorizontal: 14}}
                   onPress={() => {
-                    setConfirm(true);
-                    setModal(false);
+                    onJoin();
                   }}>
                   <Image
                     source={require('../../public/icons/yes.png')}
@@ -167,7 +205,7 @@ export default function Chat({navigation, route}) {
               fontWeight: '600',
               color: '#000',
             }}>
-            {place.name + ' LIVE CHAT'}
+            {place.locationName + ' LIVE CHAT'}
           </Text>
         </View>
         <View style={{width: 24}} />
