@@ -238,7 +238,9 @@ export default function Home({navigation}) {
   }
 
   function filterPlaces(index: number) {
-    let filteredPlaceList = places;
+    let filteredPlaceList = places.filter(item =>
+      item.locationName.includes(input),
+    );
     if (index == 0) {
       return filteredPlaceList.filter(
         item => item.locationLocationCategoryId == 'restaurant-cat-id',
