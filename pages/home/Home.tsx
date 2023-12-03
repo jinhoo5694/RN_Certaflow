@@ -39,7 +39,7 @@ export default function Home({navigation}) {
   const [location, setLocation] = useState(false);
   // This place will be used to identify where the user is at right now.
   // Therefore, it is essential to update this property with currently-closest place
-  const [place, setPlace] = useState('Woody Room');
+  const [place, setPlace] = useState('');
   const [surveyed, setSurveyed] = useState(false);
   const [submit_alert, setPointalert] = useState(false);
   const [submitted, setLocationSumbit] = useState(false);
@@ -51,7 +51,6 @@ export default function Home({navigation}) {
   const [selectedPlace, setSelectedPlace] = useState(dummyPlace.places[0]);
   const [bookmark, setBookmark] = useState(false);
   const [congestion, setCongestion] = useState(false);
-  const [locationinfo, setLocationInfo] = useState(false);
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
 
@@ -265,6 +264,37 @@ export default function Home({navigation}) {
       return filteredPlaceList;
     }
   }
+
+  function findClosestPlace() {
+    let closestPlace = null;
+    let closestDistance = Infinity;
+
+    if (places && places.length > 0) {
+      for (const item of places) {
+        const latDiff = position.coords.latitude - item.locationLatitude;
+        const lonDiff = position.coords.longitude - item.locationLongitude;
+        const distanceSquared = latDiff * latDiff + lonDiff * lonDiff;
+
+        if (distanceSquared < closestDistance) {
+          closestDistance = distanceSquared;
+          closestPlace = item;
+        }
+      }
+      if (closestPlace == null) {
+        return '';
+      } else {
+        return closestPlace.locationName;
+      }
+    }
+    return '';
+  }
+
+  useEffect(() => {
+    if (places && position) {
+      const closest = findClosestPlace();
+      setPlace(closest);
+    }
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
@@ -1011,7 +1041,7 @@ export default function Home({navigation}) {
                       fontWeight: '500',
                       fontSize: 13,
                     }}>
-                    Are you currently at {place}?{' '}
+                    Are you currently at {findClosestPlace()}?{' '}
                   </Text>
                   <Text>How congested is it?</Text>
                 </View>
@@ -1479,8 +1509,8 @@ export default function Home({navigation}) {
           ref={secondBottomSheetModalRef}
           index={0}
           enableContentPanningGesture={false}
-          backdropComponent={({ style }) => (
-            <View style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]} >
+          backdropComponent={({style}) => (
+            <View style={[style, {backgroundColor: 'rgba(0, 0, 0, 0.5)'}]}>
               <View
                 style={{
                   width: 86,
@@ -1490,7 +1520,7 @@ export default function Home({navigation}) {
                   borderRadius: 20,
                   backgroundColor: getCongestionColor(selectedPlace),
                   alignSelf: 'center',
-                  marginTop: windowHeight * 0.07
+                  marginTop: windowHeight * 0.07,
                 }}>
                 <Text
                   style={{
@@ -1513,21 +1543,24 @@ export default function Home({navigation}) {
                   watching
                 </Text>
               </View>
-              <View style={{
-                width: 0, height:0, 
-                backgroundColor: 'transparent',
-                borderStyle: 'solid',
-                borderLeftWidth: 10, // 삼각형의 너비 조절
-                borderRightWidth: 10, // 삼각형의 너비 조절
-                borderTopWidth: 10, // 삼각형의 높이 조절
-                borderLeftColor: 'transparent',
-                borderRightColor: 'transparent',
-                borderBottomColor: 'transparent', // 삼각형의 색상 조절
-                borderTopColor: getCongestionColor(selectedPlace),
-                alignSelf: 'center'
-              }}/>
+              <View
+                style={{
+                  width: 0,
+                  height: 0,
+                  backgroundColor: 'transparent',
+                  borderStyle: 'solid',
+                  borderLeftWidth: 10, // 삼각형의 너비 조절
+                  borderRightWidth: 10, // 삼각형의 너비 조절
+                  borderTopWidth: 10, // 삼각형의 높이 조절
+                  borderLeftColor: 'transparent',
+                  borderRightColor: 'transparent',
+                  borderBottomColor: 'transparent', // 삼각형의 색상 조절
+                  borderTopColor: getCongestionColor(selectedPlace),
+                  alignSelf: 'center',
+                }}
+              />
             </View>
-            )}
+          )}
           onChange={handleSecondSheetChanges}>
           <View style={{width: '100%', height: '100%'}}>
             <View
