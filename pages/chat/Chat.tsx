@@ -308,7 +308,10 @@ export default function Chat({navigation, route}) {
           paddingRight: 20,
           flex: 1,
         }}
-        contentContainerStyle={{alignItems: 'center', flex: 1}}>
+        contentContainerStyle={{
+          alignItems: 'center',
+          marginBottom: 20,
+        }}>
         {chatMessages}
       </ScrollView>
       <View
