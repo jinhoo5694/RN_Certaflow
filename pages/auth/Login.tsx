@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   SafeAreaView,
@@ -22,8 +23,24 @@ export default function Login(props: any) {
   const [pw, setPw] = useState('');
 
   function login() {
-    setAuth(true);
-    setUserId(id);
+    if (
+      id == 'dev0000' ||
+      id == 'dev0001' ||
+      id == 'dev0002' ||
+      id == 'dev0003' ||
+      id == 'dev0004' ||
+      id == 'dev0005' ||
+      id == 'dev0006'
+    ) {
+      if (pw == 'pwpw') {
+        setAuth(true);
+        setUserId(id);
+      } else {
+        Alert.alert('Invalid', 'PW does not match');
+      }
+    } else {
+      Alert.alert('Invalid', 'ID / PW does not match');
+    }
   }
 
   function register() {

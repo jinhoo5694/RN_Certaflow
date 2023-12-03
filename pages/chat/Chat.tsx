@@ -70,13 +70,6 @@ export default function Chat({navigation, route}) {
     return () => clearInterval(timer);
   }, []);
 
-  // useEffect(() => {
-  //   axios
-  //     .get('http://121.184.96.94:8070/api/v1/chat/' + chatId + '/message')
-  //     .then(response => setMessages(response.data.item.messageList))
-  //     .catch(error => console.error(error));
-  // }, [myChat]);
-
   const chatMessages =
     messages.length > 0 &&
     messages.map(message =>
@@ -135,7 +128,6 @@ export default function Chat({navigation, route}) {
     const placeLongitude = place.locationLongitude;
     const currLatitude = position.coords.latitude;
     const currLongitude = position.coords.longitude;
-
     const R = 6371;
     const dLat = deg2rad(placeLatitude - currLatitude);
     const dLon = deg2rad(placeLongitude - currLongitude);

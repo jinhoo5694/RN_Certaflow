@@ -4,6 +4,8 @@ IMPORTANT: The whole instruction is based on an assumption that your environment
 project
 If not, please follow through this guideline: https://reactnative.dev/docs/environment-setup
 
+Or, If you have an android device, you can just simply install our 'apk' file to your device!
+
 If the requirements are not met, then you might not be able to run the project properly.
 
 First, you need to clone this repository into your local repository, with 'master' branch.
@@ -16,10 +18,6 @@ yarn
 ```
 
 ## Step 2: Start your Application
-
-Currently, the project is perfectly working on iOS environment, but still debugging on Android environment.
-
-Therefore, the instructions are for ios environment only.
 
 Most important thing: iOS simulators only work on Mac environments.
 
@@ -36,13 +34,14 @@ cd ..
 npx react-native run-ios
 ```
 
+### For android
+
+There are no specific requirements for android users. just download the apk file and enjoy!
+
 ## Congratulations! Navigate through the app
 
 Now please explore through our Certaflow Service!
 
 ### Things to be improved
 
-1. Currently, Google Map for Android is not working properly. We will fix this issue shortly.
-2. Our Backend Server is still in development. Therefore, all the data available on the application is a static
-   dummy-data. We will integrate the service soon.
-3. Some fonts are not supported on certain devices. We will try to handle this issue, but it is not a major problem.
+Some fonts are not supported on certain devices. We will try to handle this issue, but it is not a major problem.
