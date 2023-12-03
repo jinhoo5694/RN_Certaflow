@@ -666,7 +666,7 @@ export default function Home({navigation}) {
                   },
                 ]}>
                 <Marker
-                  tracksViewChanges={false}
+                  tracksViewChanges={true}
                   coordinate={{
                     latitude: position && parseFloat(position.coords.latitude),
                     longitude:
@@ -909,40 +909,40 @@ export default function Home({navigation}) {
               </ScrollView>
             </View>
 
-            <TouchableOpacity
-              onPress={() => setLocationInfo(!locationinfo)}
-              style={{
-                height: 40,
-                width: 40,
-                marginTop: 15,
-                marginRight: 15,
-                alignSelf: 'flex-end',
-                justifyContent: 'flex-end',
-              }}>
-              {submitted ? (
-                locationinfo ? (
-                  <Image
-                    source={require('../../public/icons/location_black.png')}
-                    style={{height: 40, width: 40, marginRight: 10}}
-                  />
-                ) : (
-                  <Image
-                    source={require('../../public/icons/location_white.png')}
-                    style={{height: 40, width: 40, marginRight: 10}}
-                  />
-                )
-              ) : locationinfo ? (
-                <Image
-                  source={require('../../public/icons/no_location_black.png')}
-                  style={{height: 40, width: 40, marginRight: 10}}
-                />
-              ) : (
-                <Image
-                  source={require('../../public/icons/no_location_white.png')}
-                  style={{height: 40, width: 40, marginRight: 10}}
-                />
-              )}
-            </TouchableOpacity>
+            {/*<TouchableOpacity*/}
+            {/*  onPress={() => setLocationInfo(!locationinfo)}*/}
+            {/*  style={{*/}
+            {/*    height: 40,*/}
+            {/*    width: 40,*/}
+            {/*    marginTop: 15,*/}
+            {/*    marginRight: 15,*/}
+            {/*    alignSelf: 'flex-end',*/}
+            {/*    justifyContent: 'flex-end',*/}
+            {/*  }}>*/}
+            {/*  {submitted ? (*/}
+            {/*    locationinfo ? (*/}
+            {/*      <Image*/}
+            {/*        source={require('../../public/icons/location_black.png')}*/}
+            {/*        style={{height: 40, width: 40, marginRight: 10}}*/}
+            {/*      />*/}
+            {/*    ) : (*/}
+            {/*      <Image*/}
+            {/*        source={require('../../public/icons/location_white.png')}*/}
+            {/*        style={{height: 40, width: 40, marginRight: 10}}*/}
+            {/*      />*/}
+            {/*    )*/}
+            {/*  ) : locationinfo ? (*/}
+            {/*    <Image*/}
+            {/*      source={require('../../public/icons/no_location_black.png')}*/}
+            {/*      style={{height: 40, width: 40, marginRight: 10}}*/}
+            {/*    />*/}
+            {/*  ) : (*/}
+            {/*    <Image*/}
+            {/*      source={require('../../public/icons/no_location_white.png')}*/}
+            {/*      style={{height: 40, width: 40, marginRight: 10}}*/}
+            {/*    />*/}
+            {/*  )}*/}
+            {/*</TouchableOpacity>*/}
 
             <TouchableOpacity
               onPress={() => {
@@ -951,7 +951,7 @@ export default function Home({navigation}) {
               style={{
                 height: 50,
                 width: 50,
-                marginTop: windowHeight * 0.56,
+                marginTop: windowHeight * 0.6,
                 marginRight: 10,
                 alignSelf: 'flex-end',
               }}>
