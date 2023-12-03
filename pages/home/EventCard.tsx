@@ -21,15 +21,15 @@ export default function EventCard(props: any) {
   }
 
   return (
-    <View style={{width: '100%', marginBottom: 10}}>
+    <View style={{width: '100%', marginBottom: 20}}>
       <TouchableOpacity style={{width: '100%'}}>
         <Image
           source={getImage()}
           style={{
             height: 177,
-            aspectRatio: 1,
             resizeMode: 'contain',
             alignSelf: 'center',
+            marginBottom: 10
           }}
         />
         <Text
@@ -108,6 +108,7 @@ export default function EventCard(props: any) {
               fontSize: 14,
               fontWeight: '400',
               color: '#aaa',
+              marginBottom: 10
             }}>
             {description}
           </Text>

@@ -101,7 +101,7 @@ export default function Home({navigation}) {
   const secondBottomSheetModalRef = useRef<BottomSheetModal>(null);
   // variables
   const snapPoints = useMemo(() => ['80%'], []); // Here we add '0%' to make it start from the bottom
-  const secondSnapPoints = useMemo(() => ['90%'], []);
+  const secondSnapPoints = useMemo(() => ['80%'], []);
   // callbacks
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -1439,7 +1439,7 @@ export default function Home({navigation}) {
                 fontSize: 15,
                 fontWeight: '600',
                 color: '#000',
-                marginBottom: 10,
+                marginBottom: 20,
               }}>
               Today's Hot Events
             </Text>
@@ -1479,40 +1479,57 @@ export default function Home({navigation}) {
           ref={secondBottomSheetModalRef}
           index={0}
           enableContentPanningGesture={false}
-          backdropComponent={renderBackdrop}
+          backdropComponent={({ style }) => (
+            <View style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]} >
+              <View
+                style={{
+                  width: 86,
+                  height: 57,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 20,
+                  backgroundColor: getCongestionColor(selectedPlace),
+                  alignSelf: 'center',
+                  marginTop: windowHeight * 0.07
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 20,
+                    fontWeight: '600',
+                    color: '#fff',
+                  }}>
+                  {selectedPlace.currentViewsCount + 1}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'Inter',
+                    includeFontPadding: false,
+                    fontSize: 10,
+                    fontWeight: '600',
+                    color: '#fff',
+                  }}>
+                  watching
+                </Text>
+              </View>
+              <View style={{
+                width: 0, height:0, 
+                backgroundColor: 'transparent',
+                borderStyle: 'solid',
+                borderLeftWidth: 10, // 삼각형의 너비 조절
+                borderRightWidth: 10, // 삼각형의 너비 조절
+                borderTopWidth: 10, // 삼각형의 높이 조절
+                borderLeftColor: 'transparent',
+                borderRightColor: 'transparent',
+                borderBottomColor: 'transparent', // 삼각형의 색상 조절
+                borderTopColor: getCongestionColor(selectedPlace),
+                alignSelf: 'center'
+              }}/>
+            </View>
+            )}
           onChange={handleSecondSheetChanges}>
           <View style={{width: '100%', height: '100%'}}>
-            <View
-              style={{
-                width: 86,
-                height: 57,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 20,
-                backgroundColor: getCongestionColor(selectedPlace),
-                alignSelf: 'center',
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Inter',
-                  includeFontPadding: false,
-                  fontSize: 20,
-                  fontWeight: '600',
-                  color: '#fff',
-                }}>
-                {selectedPlace.currentViewsCount + 1}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: 'Inter',
-                  includeFontPadding: false,
-                  fontSize: 10,
-                  fontWeight: '600',
-                  color: '#fff',
-                }}>
-                watching
-              </Text>
-            </View>
             <View
               style={{
                 width: windowWidth,
