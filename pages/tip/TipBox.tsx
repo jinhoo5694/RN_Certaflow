@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useContext} from 'react';
 import {
   Alert,
   Dimensions,
@@ -7,30 +8,61 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import AppContext from '../../AppContext';
+import axios from 'axios';
 
 export default function TipBox(props: any) {
+  const context = useContext(AppContext);
+  const placeId = props.placeId;
+  const tipId = props.id;
+  const userId = context.id;
   const windowWidth = Dimensions.get('window').width;
   const name = props.name;
+  const liked = props.liked;
   const content = props.content;
   const date = props.date;
   const likes = props.likes;
   const dislikes = props.dislikes;
+
+  function onLike() {
+    axios
+      .post(
+        'http://121.184.96.94:8070/api/v1/location/' +
+          placeId +
+          '/tip/' +
+          tipId +
+          '/like',
+        {},
+        {
+          headers: {
+            cert_user_id: userId,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(response => Alert.alert('liked!'))
+      .catch(error => console.error(error));
+  }
+
   return (
     <TouchableOpacity
-      onPress={() =>
-        Alert.alert('Recommend', 'Like this tip?', [
-          {
-            text: 'Like',
-            onPress: () => Alert.alert('Liked'),
-            style: 'default',
-          },
-          {
-            text: 'Cancel',
-            onPress: () => {},
-            style: 'destructive',
-          },
-        ])
-      }
+      disabled={liked}
+      onPress={() => {
+        if (!liked) {
+          Alert.alert('Recommend', 'Like this tip?', [
+            {
+              text: 'Like',
+              onPress: () => onLike(),
+              style: 'default',
+            },
+            {
+              text: 'Cancel',
+              onPress: () => {},
+              style: 'destructive',
+            },
+          ]);
+        }
+      }}
       style={{
         width: windowWidth * 0.898,
         height: 94,

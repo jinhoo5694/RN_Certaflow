@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -14,30 +14,116 @@ import {
 } from 'react-native';
 import ChatMessage from './ChatMessage';
 import MyChatMessage from './MyChatMessage';
+import AppContext from '../../AppContext';
+import axios from 'axios';
 
 export default function Chat({navigation, route}) {
+  const context = useContext(AppContext);
+  const userId = context.id;
   const place = route.params.place;
+  const [chatId, setChatId] = useState('');
   const position = route.params.position;
   const [confirm, setConfirm] = useState(false);
   const [modal, setModal] = useState(false);
   const [input, setInput] = useState('');
   const [myChat, setMyChat] = useState([]);
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get('http://121.184.96.94:8070/api/v1/location/' + place.locationId, {
+        headers: {
+          cert_user_id: userId,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => {
+        const id = response.data.item.locationChatId;
+        setChatId(id);
+        axios
+          .get('http://121.184.96.94:8070/api/v1/chat/' + id + '/messages', {
+            headers: {
+              cert_user_id: userId,
+            },
+          })
+          .then(response => setMessages(response.data.item.chatMessageList))
+          .catch(err => console.error(err));
+      })
+      .catch(error => console.error(error));
+  }, [myChat]);
+
+  useEffect(() => {
+    let timer = setInterval(() => {
+      chatId !== '' &&
+        axios
+          .get(
+            'http://121.184.96.94:8070/api/v1/chat/' + chatId + '/messages',
+            {
+              headers: {
+                cert_user_id: userId,
+              },
+            },
+          )
+          .then(response => setMessages(response.data.item.chatMessageList))
+          .catch(error => console.error(error));
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // useEffect(() => {
+  //   axios
+  //     .get('http://121.184.96.94:8070/api/v1/chat/' + chatId + '/message')
+  //     .then(response => setMessages(response.data.item.messageList))
+  //     .catch(error => console.error(error));
+  // }, [myChat]);
+
+  const chatMessages =
+    messages.length > 0 &&
+    messages.map(message =>
+      message.messageInfo.chatMessageUserId == userId ? (
+        <MyChatMessage
+          key={message.messageInfo.messageId}
+          name={message.messageInfo.chatMessageUserId}
+          time={message.messageInfo.generatedAt.toString()}
+          content={message.messageInfo.messageContent}
+          likes={message.messageInfo.likesCount}
+        />
+      ) : (
+        <ChatMessage
+          key={message.messageInfo.messageId}
+          name={message.messageInfo.chatMessageUserId}
+          time={message.messageInfo.generatedAt.toString()}
+          content={message.messageInfo.messageContent}
+          likes={message.messageInfo.likesCount}
+        />
+      ),
+    );
 
   function sendChat() {
     if (input.length == 0) {
       Alert.alert('Error', 'Please enter content');
       return;
     }
-    const chatMessage = (
-      <MyChatMessage
-        key={new Date()}
-        time={'1 sec ago'}
-        content={input}
-        likes={0}
-      />
-    );
-    setMyChat(prevState => [...prevState, chatMessage]);
-    setInput('');
+    const requestForm = {
+      messageContent: input,
+    };
+
+    axios
+      .post(
+        'http://121.184.96.94:8070/api/v1/chat/' + chatId + '/messages',
+        JSON.stringify(requestForm),
+        {
+          headers: {
+            cert_user_id: userId,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        setMyChat(prevState => [...prevState, response.data.item]);
+        setInput('');
+      })
+      .catch(error => console.error(error));
   }
 
   function deg2rad(deg) {
@@ -64,7 +150,7 @@ export default function Chat({navigation, route}) {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c * 1000; // 거리 (단위: 미터)
 
-    return distance < 50;
+    return distance < 200;
   }
 
   function onJoin() {
@@ -231,13 +317,7 @@ export default function Chat({navigation, route}) {
           flex: 1,
         }}
         contentContainerStyle={{alignItems: 'center', flex: 1}}>
-        <ChatMessage
-          name={'Marcus'}
-          time={'1 hour ago'}
-          content={'sample content'}
-          likes={10}
-        />
-        {myChat}
+        {chatMessages}
       </ScrollView>
       <View
         style={{

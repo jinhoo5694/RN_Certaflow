@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Alert,
   Dimensions,
@@ -30,8 +37,11 @@ import Low from '../../components/congest/Low';
 import Middle from '../../components/congest/Middle';
 import High from '../../components/congest/High';
 import axios from 'axios';
+import AppContext from '../../AppContext';
 
 export default function Home({navigation}) {
+  const context = useContext(AppContext);
+  const userId = context.id;
   const [input, setInput] = useState('');
   const [category, setCategory] = useState(-1);
   const [tutorial, setTutorial] = useState(true);
@@ -39,7 +49,6 @@ export default function Home({navigation}) {
   const [location, setLocation] = useState(false);
   // This place will be used to identify where the user is at right now.
   // Therefore, it is essential to update this property with currently-closest place
-  const [place, setPlace] = useState('');
   const [surveyed, setSurveyed] = useState(false);
   const [submit_alert, setPointalert] = useState(false);
   const [submitted, setLocationSumbit] = useState(false);
@@ -53,13 +62,102 @@ export default function Home({navigation}) {
   const [congestion, setCongestion] = useState(false);
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
+  const [placeTips, setPlaceTips] = useState([]);
+
+  function getTipBox() {
+    if (placeTips.length > 2) {
+      const firstTip = placeTips[0];
+      const secondTip = placeTips[1];
+      const firstTipBox = (
+        <TipBox
+          placeId={selectedPlace.locationId}
+          id={firstTip.tipInfo.tipId}
+          liked={firstTip.isLikedByUser}
+          name={firstTip.tipInfo.tipUserId}
+          content={firstTip.tipInfo.tipContent}
+          date={'default'}
+          likes={firstTip.tipInfo.likesCount}
+          dislikes={0}
+        />
+      );
+      const secondTipBox = (
+        <TipBox
+          placeId={selectedPlace.locationId}
+          id={secondTip.tipInfo.tipId}
+          liked={secondTip.isLikedByUser}
+          name={secondTip.tipInfo.tipUserId}
+          content={secondTip.tipInfo.tipContent}
+          date={'default'}
+          likes={secondTip.tipInfo.likesCount}
+          dislikes={0}
+        />
+      );
+      return [firstTipBox, secondTipBox];
+    } else if (placeTips.length == 1) {
+      const tip = placeTips[0];
+      return (
+        <TipBox
+          placeId={selectedPlace.locationId}
+          id={tip.tipInfo.tipId}
+          liked={tip.isLikedByUser}
+          name={tip.tipInfo.tipUserId}
+          content={tip.tipInfo.tipContent}
+          date={'default'}
+          likes={tip.tipInfo.likesCount}
+          dislikes={0}
+        />
+      );
+    } else {
+      return null;
+    }
+  }
 
   useEffect(() => {
     axios
       .get('http://121.184.96.94:8070/api/v1/location')
-      .then(response => setPlaces(response.data.locationList))
+      .then(response => setPlaces(response.data.item.locationList))
       .catch(error => console.error(error));
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          'http://121.184.96.94:8070/api/v1/location',
+        );
+        setPlaces(response.data.item.locationList);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    // 초기 데이터 로딩
+    fetchData();
+
+    // 10초마다 API 폴링
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 5000);
+
+    // 컴포넌트가 언마운트되면 타이머 해제
+    return () => clearInterval(intervalId);
+  }, []); // 빈 배열을 전달하여 마운트 시에만 실행되도록 설정
+
+  useEffect(() => {
+    axios
+      .get(
+        'http://121.184.96.94:8070/api/v1/location/' +
+          selectedPlace.locationId +
+          '/tip',
+        {
+          headers: {
+            cert_user_id: userId,
+          },
+        },
+      )
+      .then(response => setPlaceTips(response.data.item.tipList))
+      .catch(error => console.error(error));
+  }, [selectedPlace]);
 
   async function requestPermission() {
     try {
@@ -116,7 +214,37 @@ export default function Home({navigation}) {
     console.log('handleSheetChanges', index);
   }, []);
   const handleSecondSheetChanges = useCallback((index: number) => {
-    console.log('second', index);
+    if (index === 0) {
+      axios
+        .put(
+          'http://121.184.96.94:8070/api/v1/location/' +
+            selectedPlace.locationId +
+            '/current-view/increment',
+        )
+        .then(response => {
+          setSelectedPlace(prev => {
+            let prevState = {...prev};
+            prevState.currentViewsCount = response.data.item.afterCount;
+            return prevState;
+          });
+        })
+        .catch(error => console.error(error));
+    } else {
+      axios
+        .put(
+          'http://121.184.96.94:8070/api/v1/location/' +
+            selectedPlace.locationId +
+            '/current-view/decrement',
+        )
+        .then(response => {
+          setSelectedPlace(prev => {
+            let prevState = {...prev};
+            prevState.currentViewsCount = response.data.item.afterCount;
+            return prevState;
+          });
+        })
+        .catch(error => console.error(error));
+    }
   }, []);
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -288,6 +416,37 @@ export default function Home({navigation}) {
     }
     return '';
   };
+
+  function onSurvey() {
+    const locationId = selectedPlace.locationId;
+    axios
+      .put(
+        'http://121.184.96.94:8070/api/v1/location/' +
+          locationId +
+          '/near-user/register',
+      )
+      .then(response => {
+        const requestForm = {
+          congestionLevel: selected,
+          timeToLive: 100,
+        };
+        // axios
+        //   .post(
+        //     'http://121.184.96.94:8070/api/v1/location/' +
+        //       locationId +
+        //       '/official/register',
+        //     JSON.stringify(requestForm),
+        //   )
+        //   .then(resp => {
+        //     // implement updating user feedback score here
+        //     console.log(resp.data);
+        //   })
+        //   .catch(err => console.error(err));
+        // console.log(response.data);
+      })
+      .catch(error => console.error(error));
+    setLocation(false);
+  }
 
   const styles = StyleSheet.create({
     container: {
@@ -1193,7 +1352,7 @@ export default function Home({navigation}) {
                 <View style={{flexDirection: 'row'}}>
                   <TouchableOpacity
                     onPress={() => {
-                      setLocation(false);
+                      onSurvey();
                     }}
                     style={{
                       height: 32,
@@ -1524,7 +1683,7 @@ export default function Home({navigation}) {
                     fontWeight: '600',
                     color: '#fff',
                   }}>
-                  {selectedPlace.currentViewsCount + 1}
+                  {selectedPlace.currentViewsCount}
                 </Text>
                 <Text
                   style={{
@@ -1686,7 +1845,9 @@ export default function Home({navigation}) {
                       fontWeight: '300',
                       color: '#000',
                     }}>
-                    {selectedPlace.locationAddress}
+                    {selectedPlace.locationAddress === ''
+                      ? '-'
+                      : selectedPlace.locationAddress}
                   </Text>
                 </View>
                 <View
@@ -1712,7 +1873,9 @@ export default function Home({navigation}) {
                       fontWeight: '300',
                       color: '#000',
                     }}>
-                    {selectedPlace.openHour}
+                    {selectedPlace.openHour === ''
+                      ? '-'
+                      : selectedPlace.openHour}
                   </Text>
                 </View>
                 <View
@@ -1738,7 +1901,9 @@ export default function Home({navigation}) {
                       fontWeight: '300',
                       color: '#000',
                     }}>
-                    {selectedPlace.phoneNumber}
+                    {selectedPlace.phoneNumber === ''
+                      ? '-'
+                      : selectedPlace.phoneNumber}
                   </Text>
                 </View>
                 <View
@@ -1763,7 +1928,9 @@ export default function Home({navigation}) {
                       fontWeight: '300',
                       color: '#000',
                     }}>
-                    {selectedPlace.homepage}
+                    {selectedPlace.homepage === ''
+                      ? '-'
+                      : selectedPlace.homepage}
                   </Text>
                 </View>
               </View>
@@ -1879,25 +2046,13 @@ export default function Home({navigation}) {
                       </Text>
                       <View style={{flex: 1}} />
                       <TouchableOpacity
-                        onPress={() => navigation.navigate('Tip')}>
+                        onPress={() =>
+                          navigation.navigate('Tip', {place: selectedPlace})
+                        }>
                         <Text>Add my tip +</Text>
                       </TouchableOpacity>
                     </View>
-                    <TipBox
-                      name={'Sandy'}
-                      content={'Sample content'}
-                      date={'2023 Sept 27'}
-                      likes={1306}
-                      dislikes={11}
-                    />
-
-                    <TipBox
-                      name={'Marcus'}
-                      content={'Sample content'}
-                      date={'2022 Dec 31'}
-                      likes={50}
-                      dislikes={1}
-                    />
+                    {getTipBox()}
                   </View>
                 </View>
               </View>

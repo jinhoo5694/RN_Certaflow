@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useContext} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from './home/Home';
 import Chat from './chat/Chat';
@@ -7,10 +7,14 @@ import Tip from './tip/Tip';
 import Mypage from './mypage/Mypage';
 import Login from './auth/Login';
 import Place from './place/Place';
+import AppContext from '../AppContext';
 
 export default function Main(props: any) {
   const Stack = createNativeStackNavigator();
-  const [auth, setAuth] = useState(false);
+  const context = useContext(AppContext);
+  const auth = context.auth;
+  const setAuth = context.setAuth;
+  const setId = context.setId;
 
   if (auth) {
     return (
@@ -23,6 +27,6 @@ export default function Main(props: any) {
       </Stack.Navigator>
     );
   } else {
-    return <Login setAuth={setAuth} />;
+    return <Login setAuth={setAuth} setId={setId} />;
   }
 }

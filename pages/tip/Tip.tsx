@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -12,13 +12,41 @@ import {
   View,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
+import AppContext from '../../AppContext';
+import axios from 'axios';
 
-export default function Tip({navigation}) {
+export default function Tip({navigation, route}) {
+  const context = useContext(AppContext);
+  const userId = context.id;
   const [input, setInput] = useState('');
+  const place = route.params.place;
 
   function sendTip() {
-    Alert.alert('finished');
-    navigation.goBack();
+    if (input.length > 0) {
+      const requestForm = {
+        tipContent: input,
+      };
+      axios
+        .post(
+          'http://121.184.96.94:8070/api/v1/location/' +
+            place.locationId +
+            '/tip',
+          JSON.stringify(requestForm),
+          {
+            headers: {
+              cert_user_id: userId,
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then(response => {
+          console.log(response.data);
+          navigation.goBack();
+        })
+        .catch(error => console.error(error));
+    } else {
+      Alert.alert('Please enter something');
+    }
   }
 
   const options = {

@@ -15,6 +15,7 @@ import Register from './Register';
 
 export default function Login(props: any) {
   const setAuth = props.setAuth;
+  const setUserId = props.setId;
   const windowWidth = Dimensions.get('window').width;
   const [showLogin, setShowLogin] = useState(true);
   const [id, setId] = useState('');
@@ -22,6 +23,7 @@ export default function Login(props: any) {
 
   function login() {
     setAuth(true);
+    setUserId(id);
   }
 
   function register() {
@@ -53,32 +55,32 @@ export default function Login(props: any) {
             }}
           />
           <View
-          style={{
-            width: windowWidth * 0.562,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        />
-        <View style={{width: windowWidth * 0.562, marginBottom: 17}}>
-          <Text
             style={{
-              fontFamily: 'Inter',
-              includeFontPadding: false,
-              fontSize: 13,
-              fontWeight: '600',
-              color: '#000',
-              textDecorationLine: 'underline',
-              marginLeft: 10,
-            }}>
-            Email
-          </Text>
-          <WhiteInput
-            value={id}
-            onChange={setId}
-            placeHolder={'certaflow@gmail.com'}
-            secure={false}
-            type={'email-address'}
+              width: windowWidth * 0.562,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           />
+          <View style={{width: windowWidth * 0.562, marginBottom: 17}}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 13,
+                fontWeight: '600',
+                color: '#000',
+                textDecorationLine: 'underline',
+                marginLeft: 10,
+              }}>
+              Email
+            </Text>
+            <WhiteInput
+              value={id}
+              onChange={setId}
+              placeHolder={'certaflow@gmail.com'}
+              secure={false}
+              type={'email-address'}
+            />
           </View>
           <View style={{width: windowWidth * 0.562, marginBottom: 3}}>
             <Text
