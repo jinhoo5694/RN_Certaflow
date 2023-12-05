@@ -28,6 +28,7 @@ export default function Chat({navigation, route}) {
   const [input, setInput] = useState('');
   const [myChat, setMyChat] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [chatInfo, setChatInfo] = useState({});
 
   useEffect(() => {
     axios
@@ -41,12 +42,26 @@ export default function Chat({navigation, route}) {
         const id = response.data.item.locationChatId;
         setChatId(id);
         axios
+          .put('http://121.184.96.94:8070/api/v1/chat/' + id + '/in', {}, {})
+          .then(resp => console.log(resp.data))
+          .catch(err => console.error(err));
+        axios
           .get('http://121.184.96.94:8070/api/v1/chat/' + id + '/messages', {
             headers: {
               cert_user_id: userId,
             },
           })
-          .then(response => setMessages(response.data.item.chatMessageList))
+          .then(response => {
+            setMessages(response.data.item.chatMessageList);
+          })
+          .catch(err => console.error(err));
+        axios
+          .get('http://121.184.96.94:8070/api/v1/chat/' + id, {
+            headers: {
+              cert_user_id: userId,
+            },
+          })
+          .then(response => setChatInfo(response.data.item.chatInfo))
           .catch(err => console.error(err));
       })
       .catch(error => console.error(error));
@@ -66,7 +81,7 @@ export default function Chat({navigation, route}) {
           )
           .then(response => setMessages(response.data.item.chatMessageList))
           .catch(error => console.error(error));
-    }, 10000);
+    }, 2000);
     return () => clearInterval(timer);
   }, []);
 
@@ -84,10 +99,15 @@ export default function Chat({navigation, route}) {
       ) : (
         <ChatMessage
           key={message.messageInfo.messageId}
+          message={message}
           name={message.messageInfo.chatMessageUserId}
-          time={message.messageInfo.generatedAt.toString()}
+          time={message.messageInfo.generatedAt}
           content={message.messageInfo.messageContent}
           likes={message.messageInfo.likesCount}
+          user={
+            message.isLikedByUser ||
+            message.messageInfo.chatMessageUserId === userId
+          }
         />
       ),
     );
@@ -264,7 +284,18 @@ export default function Chat({navigation, route}) {
           alignItems: 'center',
           padding: 15,
         }}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() => {
+            axios
+              .put(
+                'http://121.184.96.94:8070/api/v1/chat/' + chatId + '/out',
+                {},
+                {},
+              )
+              .then(response => console.log(response.data))
+              .catch(error => console.error(error));
+            navigation.goBack();
+          }}>
           <Image
             source={require('../../public/icons/back.png')}
             style={{
@@ -283,7 +314,10 @@ export default function Chat({navigation, route}) {
               fontWeight: '600',
               color: '#000',
             }}>
-            {place.locationName + ' LIVE CHAT'}
+            {place.locationName +
+              ' LIVE CHAT (' +
+              (chatInfo && chatInfo.membersCount) +
+              ' online)'}
           </Text>
         </View>
         <View style={{width: 24}} />

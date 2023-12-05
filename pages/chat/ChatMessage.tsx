@@ -1,11 +1,42 @@
 import * as React from 'react';
+import {useContext} from 'react';
 import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
+import AppContext from '../../AppContext';
+import axios from 'axios';
 
 export default function ChatMessage(props: any) {
   const name = props.name;
   const time = props.time;
   const content = props.content;
-  const likes = props.likes;
+  let likes = props.likes;
+  const message = props.message;
+  let user = props.user;
+  const context = useContext(AppContext);
+  const userId = context.id;
+
+  function likeComment() {
+    message &&
+      axios
+        .post(
+          'http://121.184.96.94:8070/api/v1/chat/' +
+            message.messageInfo.chatMessageChatId +
+            '/messages/' +
+            message.messageInfo.messageId +
+            '/like',
+          {},
+          {
+            headers: {
+              cert_user_id: userId,
+            },
+          },
+        )
+        .then(response => {
+          likes += 1;
+          user = true;
+        })
+        .catch(error => console.error(error));
+  }
+
   return (
     <View style={{width: '100%', flexDirection: 'row', marginVertical: 8}}>
       <Image
@@ -27,7 +58,21 @@ export default function ChatMessage(props: any) {
           {name}
         </Text>
         <TouchableOpacity
-          onPress={() => Alert.alert('Like this comment?')}
+          disabled={user}
+          onPress={() =>
+            Alert.alert('Like this comment?', '', [
+              {
+                text: 'Like',
+                onPress: () => likeComment(),
+                style: 'default',
+              },
+              {
+                text: 'Cancel',
+                onPress: () => {},
+                style: 'destructive',
+              },
+            ])
+          }
           style={{
             backgroundColor: '#d9d9d9',
             borderRadius: 40,

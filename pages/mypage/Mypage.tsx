@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -10,11 +10,31 @@ import {
   View,
 } from 'react-native';
 import MypageHeader from './MypageHeader';
+import axios from 'axios';
+import AppContext from '../../AppContext';
 import Plan from './Plan';
-import Saved from './Saved';
 
 export default function Mypage({navigation}) {
+  const context = useContext(AppContext);
+  const userId = context.id;
   const [modal, setModal] = useState(false);
+  const [plan, setPlan] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get('http://121.184.96.94:8070/api/v1/user/on-plan', {
+        headers: {
+          cert_user_id: userId,
+        },
+      })
+      .then(response => setPlan(response.data.item.item))
+      .catch(error => console.error(error));
+  }, []);
+
+  const planCards = plan.map(item => (
+    <Plan key={item.locationInfo.locationId} place={item.locationInfo} />
+  ));
+
   return (
     <SafeAreaView
       style={{
@@ -220,8 +240,142 @@ export default function Mypage({navigation}) {
           <Text>Contribution Level</Text>
         </View>
       </View>
-      <Plan navigation={navigation} />
-      <Saved navigation={navigation} />
+      <View
+        style={{
+          width: Dimensions.get('window').width * 0.822,
+          marginTop: 36,
+          alignSelf: 'center',
+        }}>
+        <View
+          style={{
+            height: 20,
+            width: '100%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 5,
+          }}>
+          <Image
+            source={require('../../public/icons/list.png')}
+            style={{
+              height: 20,
+              width: 20,
+              resizeMode: 'contain',
+              marginRight: 5,
+            }}
+          />
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 15,
+              fontWeight: '600',
+              color: '#000',
+              flex: 1,
+            }}>
+            Place-on-Plan
+          </Text>
+          <TouchableOpacity
+            style={{
+              height: '100%',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 13,
+                fontWeight: '400',
+                color: '#000',
+              }}>
+              more
+            </Text>
+            <Image
+              source={require('../../public/icons/next.png')}
+              style={{
+                height: 16,
+                width: 16,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          {planCards}
+        </View>
+      </View>
+      <View
+        style={{
+          width: Dimensions.get('window').width * 0.822,
+          marginTop: 36,
+          alignSelf: 'center',
+        }}>
+        <View
+          style={{
+            height: 20,
+            width: '100%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 5,
+          }}>
+          <Image
+            source={require('../../public/icons/bookMark.png')}
+            style={{
+              height: 20,
+              width: 20,
+              resizeMode: 'contain',
+              marginRight: 5,
+            }}
+          />
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              includeFontPadding: false,
+              fontSize: 15,
+              fontWeight: '600',
+              color: '#000',
+              flex: 1,
+            }}>
+            Saved Places
+          </Text>
+          <TouchableOpacity
+            style={{
+              height: '100%',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 13,
+                fontWeight: '400',
+                color: '#000',
+              }}>
+              more
+            </Text>
+            <Image
+              source={require('../../public/icons/next.png')}
+              style={{
+                height: 16,
+                width: 16,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          {planCards}
+        </View>
+      </View>
     </SafeAreaView>
   );
 }

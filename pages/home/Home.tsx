@@ -63,6 +63,8 @@ export default function Home({navigation}) {
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
   const [placeTips, setPlaceTips] = useState([]);
+  const [placeMessages, setPlaceMessages] = useState([]);
+  const [placeInfo, setPlaceInfo] = useState({});
 
   function getTipBox() {
     if (placeTips.length > 2) {
@@ -205,7 +207,30 @@ export default function Home({navigation}) {
   }, []);
   const handleSecondModalPress = useCallback((place: object) => {
     secondBottomSheetModalRef.current?.present();
-    console.log(place.locationCongestionLevel);
+    axios
+      .get('http://121.184.96.94:8070/api/v1/location/' + place.locationId, {
+        headers: {
+          cert_user_id: userId,
+        },
+      })
+      .then(response => {
+        setPlaceInfo(response.data.item);
+        const chatId = response.data.item.locationChatId;
+        axios
+          .get(
+            'http://121.184.96.94:8070/api/v1/chat/' + chatId + '/messages',
+            {
+              headers: {
+                cert_user_id: userId,
+              },
+            },
+          )
+          .then(resp => {
+            setPlaceMessages(resp.data.item.chatMessageList);
+          })
+          .catch(err => console.error(err));
+      })
+      .catch(error => console.error(error));
     setSelectedPlace(place);
   }, []);
   const close = useCallback(() => {
@@ -432,7 +457,6 @@ export default function Home({navigation}) {
         },
       )
       .then(response => {
-        console.log(response.data);
         setPointalert(true);
         setLocationSumbit(true);
         setLocation(false);
@@ -461,6 +485,25 @@ export default function Home({navigation}) {
       position: 'absolute',
     },
   });
+
+  function getMessages() {
+    const sliced = placeMessages.slice(0, 2);
+    console.log(sliced[0]);
+    const chatMessageCards = sliced.map(item => (
+      <ChatMessage
+        key={item.messageInfo.messageId}
+        message={item}
+        name={item.messageInfo.chatMessageUserId}
+        time={item.messageInfo.generatedAt}
+        content={item.messageInfo.messageContent}
+        likes={item.messageInfo.likesCount}
+        user={
+          item.isLikedByUser || item.messageInfo.chatMessageUserId === userId
+        }
+      />
+    ));
+    return chatMessageCards;
+  }
 
   return (
     <SafeAreaView>
@@ -1763,7 +1806,33 @@ export default function Home({navigation}) {
                 paddingHorizontal: 26,
                 paddingVertical: 24,
               }}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  if (placeInfo.isIncludedInOnPlan) {
+                    Alert.alert('Error', 'Place already on your plan!');
+                  } else {
+                    axios
+                      .post(
+                        'http://121.184.96.94:8070/api/v1/location/' +
+                          selectedPlace.locationId +
+                          '/add-on-plan',
+                        {},
+                        {
+                          headers: {
+                            cert_user_id: userId,
+                          },
+                        },
+                      )
+                      .then(response => {
+                        setPlaceInfo(prevState => {
+                          let prevObj = {...prevState};
+                          prevObj.isIncludedInOnPlan = true;
+                          return prevObj;
+                        });
+                      })
+                      .catch(error => console.error(error));
+                  }
+                }}>
                 <Image
                   source={require('../../public/icons/addPlan.png')}
                   style={{
@@ -1839,10 +1908,56 @@ export default function Home({navigation}) {
                 </View>
                 {getCongestionCard(selectedPlace)}
               </View>
-              <TouchableOpacity onPress={() => setBookmark(!bookmark)}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (!placeInfo.isIncludedInOnPlan) {
+                    axios
+                      .post(
+                        'http://121.184.96.94:8070/api/v1/location/' +
+                          selectedPlace.locationId +
+                          '/add-on-plan',
+                        {},
+                        {
+                          headers: {
+                            cert_user_id: userId,
+                          },
+                        },
+                      )
+                      .then(response => {
+                        setPlaceInfo(prevState => {
+                          let prevObj = {...prevState};
+                          prevObj.isIncludedInOnPlan = true;
+                          return prevObj;
+                        });
+                      })
+                      .catch(error => console.error(error));
+                    Alert.alert('added!');
+                  } else {
+                    axios
+                      .delete(
+                        'http://121.184.96.94:8070/api/v1/location/' +
+                          selectedPlace.locationId +
+                          '/delete-on-plan',
+                        {
+                          headers: {
+                            cert_user_id: userId,
+                          },
+                        },
+                      )
+                      .then(response => {
+                        setPlaceInfo(prevState => {
+                          let prevObj = {...prevState};
+                          prevObj.isIncludedInOnPlan = false;
+                          return prevObj;
+                        });
+                      })
+                      .catch(error => console.error(error));
+                    Alert.alert('deleted!');
+                  }
+                }}>
                 <Image
                   source={
-                    bookmark
+                    placeInfo.isIncludedInOnPlan
                       ? require('../../public/icons/bookMark.png')
                       : require('../../public/icons/bookMarkNone.png')
                   }
@@ -2035,18 +2150,7 @@ export default function Home({navigation}) {
                       backgroundColor: '#f5f5f5',
                       padding: 13,
                     }}>
-                    <ChatMessage
-                      name={'Sandy'}
-                      time={'2mins ago'}
-                      content={'sample content'}
-                      likes={2}
-                    />
-                    <ChatMessage
-                      name={'Anika'}
-                      time={'30sec ago'}
-                      content={'Bla Bla Bla Bla'}
-                      likes={0}
-                    />
+                    {getMessages()}
                   </TouchableOpacity>
                 </View>
                 <View
