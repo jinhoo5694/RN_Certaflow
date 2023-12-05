@@ -52,7 +52,7 @@ export default function Home({navigation}) {
   const [surveyed, setSurveyed] = useState(false);
   const [submit_alert, setPointalert] = useState(false);
   const [submitted, setLocationSumbit] = useState(false);
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(-1);
   const [position, setPosition] = useState({
     coords: {latitude: 36, longitude: 127},
   });
@@ -205,6 +205,7 @@ export default function Home({navigation}) {
   }, []);
   const handleSecondModalPress = useCallback((place: object) => {
     secondBottomSheetModalRef.current?.present();
+    console.log(place.locationCongestionLevel);
     setSelectedPlace(place);
   }, []);
   const close = useCallback(() => {
@@ -221,13 +222,7 @@ export default function Home({navigation}) {
             selectedPlace.locationId +
             '/current-view/increment',
         )
-        .then(response => {
-          setSelectedPlace(prev => {
-            let prevState = {...prev};
-            prevState.currentViewsCount = response.data.item.afterCount;
-            return prevState;
-          });
-        })
+        .then(response => {})
         .catch(error => console.error(error));
     } else {
       axios
@@ -236,13 +231,7 @@ export default function Home({navigation}) {
             selectedPlace.locationId +
             '/current-view/decrement',
         )
-        .then(response => {
-          setSelectedPlace(prev => {
-            let prevState = {...prev};
-            prevState.currentViewsCount = response.data.item.afterCount;
-            return prevState;
-          });
-        })
+        .then(response => {})
         .catch(error => console.error(error));
     }
   }, []);
@@ -271,9 +260,9 @@ export default function Home({navigation}) {
   }
 
   function getPlaceCongestionMarker(congestion: number) {
-    if (congestion == 0) {
+    if (congestion < 10) {
       return require('../../public/icons/not_congested.png');
-    } else if (congestion == 1) {
+    } else if (congestion >= 10 && congestion < 20) {
       return require('../../public/icons/slight_congested.png');
     } else {
       return require('../../public/icons/very_congested.png');
@@ -331,9 +320,12 @@ export default function Home({navigation}) {
     ));
 
   function getCongestionCard(place: object) {
-    if (place.locationCongestionLevel == 0) {
+    if (place.locationCongestionLevel < 10) {
       return <Low />;
-    } else if (place.locationCongestionLevel == 1) {
+    } else if (
+      place.locationCongestionLevel >= 10 &&
+      place.locationCongestionLevel < 20
+    ) {
       return <Middle />;
     } else {
       return <High />;
@@ -341,9 +333,12 @@ export default function Home({navigation}) {
   }
 
   function getCongestionColor(place: object) {
-    if (place.locationCongestionLevel == 0) {
+    if (place.locationCongestionLevel < 10) {
       return '#00990f';
-    } else if (place.locationCongestionLevel == 1) {
+    } else if (
+      place.locationCongestionLevel >= 10 &&
+      place.locationCongestionLevel < 20
+    ) {
       return '#ecaa00';
     } else {
       return '#c80000';
@@ -418,34 +413,34 @@ export default function Home({navigation}) {
   };
 
   function onSurvey() {
-    const locationId = selectedPlace.locationId;
+    const locationId = closestPlace().locationId;
+    const requestForm = {
+      congestionLevel: selected.toString(),
+      timeToLive: '60',
+    };
     axios
-      .put(
-        'http://121.184.96.94:8070/api/v1/location/' +
+      .post(
+        'http://121.184.96.94:8070/api/v1/congestion/location/' +
           locationId +
-          '/near-user/register',
+          '/feedback/register',
+        JSON.stringify(requestForm),
+        {
+          headers: {
+            cert_user_id: userId,
+            'Content-Type': 'application/json',
+          },
+        },
       )
       .then(response => {
-        const requestForm = {
-          congestionLevel: selected,
-          timeToLive: 100,
-        };
-        // axios
-        //   .post(
-        //     'http://121.184.96.94:8070/api/v1/location/' +
-        //       locationId +
-        //       '/official/register',
-        //     JSON.stringify(requestForm),
-        //   )
-        //   .then(resp => {
-        //     // implement updating user feedback score here
-        //     console.log(resp.data);
-        //   })
-        //   .catch(err => console.error(err));
-        // console.log(response.data);
+        console.log(response.data);
+        setPointalert(true);
+        setLocationSumbit(true);
+        setLocation(false);
       })
-      .catch(error => console.error(error));
-    setLocation(false);
+      .catch(error => {
+        console.error(error);
+        setLocation(false);
+      });
   }
 
   const styles = StyleSheet.create({
@@ -1214,6 +1209,43 @@ export default function Home({navigation}) {
                     }}>
                     <TouchableOpacity
                       onPress={() => {
+                        setSelected(0);
+                        setSurveyed(true);
+                      }}>
+                      <View
+                        style={[
+                          {
+                            height: 12,
+                            width: 12,
+                            borderRadius: 12,
+                            borderWidth: 1,
+                            borderColor: '#000',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          },
+                        ]}>
+                        {selected == 0 ? (
+                          <View
+                            style={{
+                              height: 6,
+                              width: 6,
+                              borderRadius: 6,
+                              backgroundColor: '#000',
+                            }}
+                          />
+                        ) : null}
+                      </View>
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        borderStyle: 'dotted',
+                        width: windowWidth * 0.135,
+                        borderWidth: 1,
+                        borderRadius: 1,
+                      }}
+                    />
+                    <TouchableOpacity
+                      onPress={() => {
                         setSelected(1);
                         setSurveyed(true);
                       }}>
@@ -1244,7 +1276,7 @@ export default function Home({navigation}) {
                     <View
                       style={{
                         borderStyle: 'dotted',
-                        width: windowWidth * 0.2,
+                        width: windowWidth * 0.135,
                         borderWidth: 1,
                         borderRadius: 1,
                       }}
@@ -1281,7 +1313,7 @@ export default function Home({navigation}) {
                     <View
                       style={{
                         borderStyle: 'dotted',
-                        width: windowWidth * 0.2,
+                        width: windowWidth * 0.135,
                         borderWidth: 1,
                         borderRadius: 1,
                       }}
@@ -1329,6 +1361,14 @@ export default function Home({navigation}) {
                         fontSize: 9,
                         textAlign: 'center',
                       }}>
+                      empty{'\n'}place
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: 'Inter',
+                        fontSize: 9,
+                        textAlign: 'center',
+                      }}>
                       not{'\n'}congested
                     </Text>
                     <Text
@@ -1352,7 +1392,7 @@ export default function Home({navigation}) {
                 <View style={{flexDirection: 'row'}}>
                   <TouchableOpacity
                     onPress={() => {
-                      onSurvey();
+                      setLocation(false);
                     }}
                     style={{
                       height: 32,
@@ -1380,9 +1420,7 @@ export default function Home({navigation}) {
                   {surveyed ? (
                     <TouchableOpacity
                       onPress={() => {
-                        setLocation(false);
-                        setPointalert(true);
-                        setLocationSumbit(true);
+                        onSurvey();
                       }}
                       style={{
                         height: 32,
@@ -1683,7 +1721,7 @@ export default function Home({navigation}) {
                     fontWeight: '600',
                     color: '#fff',
                   }}>
-                  {selectedPlace.currentViewsCount}
+                  {selectedPlace.currentViewsCount + 1}
                 </Text>
                 <Text
                   style={{
