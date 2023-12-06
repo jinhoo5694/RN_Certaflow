@@ -134,7 +134,11 @@ export default function TipBox(props: any) {
           </Text>
           <View style={{flex: 1}} />
           <Image
-            source={require('../../public/icons/thumbs_up.png')}
+            source={
+              liked
+                ? require('../../public/icons/liked.png')
+                : require('../../public/icons/thumbs_up.png')
+            }
             style={{
               height: 13,
               width: 13,

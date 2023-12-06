@@ -518,7 +518,6 @@ export default function Home({navigation}) {
 
   function getMessages() {
     const sliced = placeMessages.slice(0, 2);
-    console.log(sliced[0]);
     const chatMessageCards = sliced.map(item => (
       <ChatMessage
         key={item.messageInfo.messageId}

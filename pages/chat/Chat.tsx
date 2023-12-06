@@ -108,6 +108,7 @@ export default function Chat({navigation, route}) {
             message.isLikedByUser ||
             message.messageInfo.chatMessageUserId === userId
           }
+          liked={message.isLikedByUser}
         />
       ),
     );

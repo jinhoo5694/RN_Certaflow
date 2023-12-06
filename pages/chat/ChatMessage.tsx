@@ -15,6 +15,8 @@ export default function ChatMessage(props: any) {
   const userId = context.id;
   const liked = props.liked;
 
+  console.log(liked);
+
   function likeComment() {
     message &&
       axios
