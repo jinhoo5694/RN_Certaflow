@@ -37,7 +37,7 @@ npx react-native run-ios
 ### For android
 
 There are no specific requirements for android users. just download the apk file and enjoy!
-link: https://drive.google.com/file/d/1pEIXuzqqIOUsTDmK1Iee8Z5llTGkCbqI/view?usp=drive_link
+link: https://drive.google.com/file/d/1p3XMWQuPSl2SVn7NjmTfDwSVkITdSjdS/view?usp=drive_link
 
 ## Congratulations! Navigate through the app
 

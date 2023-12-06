@@ -379,7 +379,6 @@ export default function Chat({navigation, route}) {
                 borderRadius: 20,
                 paddingHorizontal: 15,
                 includeFontPadding: false,
-                fontSize: 20,
               }}
               value={input}
               onChangeText={setInput}
