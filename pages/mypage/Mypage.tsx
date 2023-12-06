@@ -17,6 +17,7 @@ import Plan from './Plan';
 export default function Mypage({navigation}) {
   const context = useContext(AppContext);
   const userId = context.id;
+  const setAuth = context.setAuth;
   const [modal, setModal] = useState(false);
   const [plan, setPlan] = useState([]);
 
@@ -104,7 +105,7 @@ export default function Mypage({navigation}) {
                 alignSelf: 'center',
                 marginTop: 26,
               }}>
-              John Kim
+              {userId}
             </Text>
             <View
               style={{
@@ -235,9 +236,22 @@ export default function Mypage({navigation}) {
               color: '#000',
               marginBottom: 6,
             }}>
-            John Kim
+            {userId}
           </Text>
           <Text>Contribution Level</Text>
+          <TouchableOpacity onPress={() => setAuth(false)}>
+            <Text
+              style={{
+                fontFamily: 'Inter',
+                includeFontPadding: false,
+                fontSize: 17,
+                fontWeight: '600',
+                color: 'red',
+                textDecorationLine: 'underline',
+              }}>
+              Logout
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
       <View

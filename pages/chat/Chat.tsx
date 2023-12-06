@@ -378,6 +378,8 @@ export default function Chat({navigation, route}) {
                 backgroundColor: '#f6f6f6',
                 borderRadius: 20,
                 paddingHorizontal: 15,
+                includeFontPadding: false,
+                fontSize: 20,
               }}
               value={input}
               onChangeText={setInput}
