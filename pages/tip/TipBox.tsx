@@ -23,6 +23,7 @@ export default function TipBox(props: any) {
   const date = props.date;
   const likes = props.likes;
   const dislikes = props.dislikes;
+  const update = props.update;
 
   function onLike() {
     axios
@@ -40,7 +41,10 @@ export default function TipBox(props: any) {
           },
         },
       )
-      .then(response => Alert.alert('liked!'))
+      .then(response => {
+        Alert.alert('liked!');
+        update;
+      })
       .catch(error => console.error(error));
   }
 

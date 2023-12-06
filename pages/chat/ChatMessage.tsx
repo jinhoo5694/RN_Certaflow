@@ -13,6 +13,7 @@ export default function ChatMessage(props: any) {
   let user = props.user;
   const context = useContext(AppContext);
   const userId = context.id;
+  const liked = props.liked;
 
   function likeComment() {
     message &&
@@ -101,7 +102,11 @@ export default function ChatMessage(props: any) {
           </Text>
           <View style={{flex: 1}} />
           <Image
-            source={require('../../public/icons/like.png')}
+            source={
+              liked
+                ? require('../../public/icons/heart.png')
+                : require('../../public/icons/like.png')
+            }
             style={{
               height: 13,
               width: 13,

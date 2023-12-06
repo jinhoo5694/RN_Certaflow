@@ -80,6 +80,7 @@ export default function Home({navigation}) {
           date={'default'}
           likes={firstTip.tipInfo.likesCount}
           dislikes={0}
+          update={() => updatePlaceDetail(selectedPlace.locationId)}
         />
       );
       const secondTipBox = (
@@ -92,6 +93,7 @@ export default function Home({navigation}) {
           date={'default'}
           likes={secondTip.tipInfo.likesCount}
           dislikes={0}
+          update={() => updatePlaceDetail(selectedPlace.locationId)}
         />
       );
       return [firstTipBox, secondTipBox];
@@ -107,6 +109,7 @@ export default function Home({navigation}) {
           date={'default'}
           likes={tip.tipInfo.likesCount}
           dislikes={0}
+          update={() => updatePlaceDetail(selectedPlace.locationId)}
         />
       );
     } else {
@@ -205,6 +208,33 @@ export default function Home({navigation}) {
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+
+  function updatePlaceDetail(id: string) {
+    axios
+      .get('http://121.184.96.94:8070/api/v1/location/' + id, {
+        headers: {
+          cert_user_id: userId,
+        },
+      })
+      .then(response => {
+        setPlaceInfo(response.data.item);
+        const chatId = response.data.item.locationChatId;
+        axios
+          .get(
+            'http://121.184.96.94:8070/api/v1/chat/' + chatId + '/messages',
+            {
+              headers: {
+                cert_user_id: userId,
+              },
+            },
+          )
+          .then(response => {
+            setPlaceMessages(response.data.item.chatMessageList);
+          })
+          .catch(error => console.error(error));
+      });
+  }
+
   const handleSecondModalPress = useCallback((place: object) => {
     secondBottomSheetModalRef.current?.present();
     axios
@@ -500,6 +530,7 @@ export default function Home({navigation}) {
         user={
           item.isLikedByUser || item.messageInfo.chatMessageUserId === userId
         }
+        liked={item.isLikedByUser}
       />
     ));
     return chatMessageCards;
