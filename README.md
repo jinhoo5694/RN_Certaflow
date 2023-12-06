@@ -43,6 +43,11 @@ link: https://drive.google.com/file/d/1p3XMWQuPSl2SVn7NjmTfDwSVkITdSjdS/view?usp
 
 Now please explore through our Certaflow Service!
 
+## Backend Server
+
+To take a look at our backend Java Spring server, come take a look at;
+https://github.com/KingsFavor/cs473-certaflow-server
+
 ### Things to be improved
 
 Some fonts are not supported on certain devices. We will try to handle this issue, but it is not a major problem.
